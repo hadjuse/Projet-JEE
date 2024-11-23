@@ -1,4 +1,4 @@
 package com.projet.controller;
 
-public class ActionsControllers {
+public class ActionsController {
 }
