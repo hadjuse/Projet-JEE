@@ -52,11 +52,11 @@ public class Joueur {
         }
     }
 
-    public int getPointProduction() {
+    public int getPointsProduction() {
         return pointProduction;
     }
 
-    public void setPointProduction(int pointProduction) {
+    public void setPointsProduction(int pointProduction) {
         this.pointProduction = pointProduction;
     }
     public int getId() {
