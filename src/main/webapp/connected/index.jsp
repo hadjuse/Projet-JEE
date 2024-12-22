@@ -21,7 +21,7 @@
 <a href="scores">Scores</a> <br>
 <a href="rules">Règles</a> <br>
 <a href="credits">Crédits</a> <br>
-<a href="form.jsp">Inscription</a> <br>
+<a href="../form/index.jsp">Inscription</a> <br>
 <!-- add deconexion -->
 </body>
 </html>

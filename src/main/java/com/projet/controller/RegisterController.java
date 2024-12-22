@@ -21,6 +21,17 @@ public class RegisterController extends HttpServlet {
         entityManager = Persistence.createEntityManagerFactory("jeuPU");
     }
 
+    private static final long serialVersionUID = 1L;
+    private void setPlayerAttribut(Joueur joueur, String nom, String mdp) {
+        joueur.setScore(0);
+        joueur.setNbSoldats(0);
+        joueur.setNbVilles(0);
+        joueur.setNbForets(0);
+        joueur.setNbTuiles(0);
+        joueur.setPointProduction(0);
+        joueur.setNom(nom);
+        joueur.setPassword(Joueur.hashPassword(mdp));
+    }
 
     @Override
     @PersistenceContext
@@ -31,15 +42,7 @@ public class RegisterController extends HttpServlet {
         try{
             em.getTransaction().begin();
             Joueur joueur = new Joueur();
-            System.out.println("Nom du joueur : " + nom);
-            joueur.setNom(nom);
-            joueur.setScore(0);
-            joueur.setNbSoldats(0);
-            joueur.setNbVilles(0);
-            joueur.setNbForets(0);
-            joueur.setNbTuiles(0);
-            joueur.setPointProduction(0);
-            joueur.setPassword(mdp);
+            setPlayerAttribut(joueur, nom, mdp);
             em.persist(joueur);
             em.getTransaction().commit();
             response.getWriter().println("Joueur enregistré avec succès");
