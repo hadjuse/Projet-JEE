@@ -31,7 +31,7 @@ public class LoginController extends HttpServlet {
                     .setParameter("mdp", Joueur.hashPassword(mdp))
                     .getSingleResult();
             request.getSession().setAttribute("joueur", joueur);
-            response.sendRedirect("connected.jsp");
+            response.sendRedirect("connected/index.jsp");
         } catch (NoResultException e) {
             response.getWriter().println("Nom d'utilisateur ou mot de passe incorrect");
         }
