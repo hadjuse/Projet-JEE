@@ -33,6 +33,15 @@ public class RegisterController extends HttpServlet {
         joueur.setPassword(Joueur.hashPassword(mdp));
     }
 
+    private void throwErrorWhenJoueurNotRegisterCorrectly(HttpServletResponse response, EntityManager em, Exception e) throws IOException {
+        em.getTransaction().rollback();
+        response.getWriter().println("Erreur lors de l'enregistrement du joueur"+ e.getMessage());
+    }
+    private void persistPlayerIntoDatabase(EntityManager em, Joueur joueur) {
+        em.persist(joueur);
+        em.getTransaction().commit();
+    }
+
     @Override
     @PersistenceContext
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws SecurityException, IOException {
@@ -43,16 +52,16 @@ public class RegisterController extends HttpServlet {
             em.getTransaction().begin();
             Joueur joueur = new Joueur();
             setPlayerAttribut(joueur, nom, mdp);
-            em.persist(joueur);
-            em.getTransaction().commit();
+            persistPlayerIntoDatabase(em, joueur);
             response.getWriter().println("Joueur enregistré avec succès");
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            response.getWriter().println("Erreur lors de l'enregistrement du joueur"+e.getMessage());
+            throwErrorWhenJoueurNotRegisterCorrectly(response, em, e);
         } finally {
             em.close();
         }
     }
+
+
     @Override
     public void destroy() {
         if(entityManager != null && entityManager.isOpen()) {
