@@ -1,39 +1,49 @@
 package com.projet.model;
 
 public class Tuile {
-
     private int x;
     private int y;
-    private String type;
+    private String type; // "ville", "montagne", "foret", "vide"
+    private Joueur proprietaire;
 
-    public Tuile(int x, int y, String type){
-        this.x=x;
-        this.y=y;
-        this.type=type;
+    public Tuile(int x, int y, String type) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.proprietaire = null;
     }
 
-    public int getX(){
+    // Getters et Setters
+    public int getX() {
         return x;
     }
 
-    public int getY(){
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
         return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setX(int x){
-        this.x=x;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setY(int y){
-        this.y=y;
+    public Joueur getProprietaire() {
+        return proprietaire;
     }
 
-    public void setType(String type){
-        this.type=type;
+    public void setProprietaire(Joueur proprietaire) {
+        this.proprietaire = proprietaire;
     }
 
     @Override
