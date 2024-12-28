@@ -1,35 +1,35 @@
 package com.projet.model;
 
 public class Soldat {
-    private int positionX;
-    private int positionY;
+    private int x;
+    private int y;
     private int pointsDefense;
     private boolean blesse;
     private int coutProduction;
 
-    public Soldat(int positionX, int positionY, int pointsDefense, int coutProduction) {
-        this.positionX = positionX;
-        this.positionY = positionY;
+    public Soldat(int x, int y, int pointsDefense, int coutProduction) {
+        this.x = x;
+        this.y = y;
         this.pointsDefense = pointsDefense;
         this.blesse = false;
         this.coutProduction = coutProduction;
     }
 
     // Getters et Setters
-    public int getPositionX() {
-        return positionX;
+    public int getX() {
+        return x;
     }
 
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public int getPositionY() {
-        return positionY;
+    public int getY() {
+        return y;
     }
 
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
+    public void setY(int y) {
+        this.y = y;
     }
 
     public int getPointsDefense() {
