@@ -1,10 +1,10 @@
 package com.projet.model;
 
-public class Foret {
+public class Foret  extends Tuile{
     private int ressourcesProduction;
 
-    public Foret(int coordX, int coordY, int ressourcesProduction) {
-        super();
+    public Foret(int x, int y, int ressourcesProduction) {
+        super(x,y,"foret");
         this.ressourcesProduction = ressourcesProduction;
     }
 
