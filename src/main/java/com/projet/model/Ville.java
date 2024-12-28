@@ -1,35 +1,16 @@
 package com.projet.model;
 
-public class Ville {
-    private int coordX;
-    private int coordY;
+public class Ville extends Tuile {
     private int pointsDefense;
-    private Joueur proprietaire;
+    private int productionParTour;
 
-    public Ville(int coordX, int coordY, int pointsDefense, Joueur proprietaire) {
-        this.coordX = coordX;
-        this.coordY = coordY;
+    public Ville(int x, int y, int pointsDefense, int productionParTour) {
+        super(x,y,"ville");
         this.pointsDefense = pointsDefense;
-        this.proprietaire = proprietaire;
+        this.productionParTour = productionParTour;
     }
 
     // Getters et Setters
-    public int getCoordX() {
-        return coordX;
-    }
-
-    public void setCoordX(int coordX) {
-        this.coordX = coordX;
-    }
-
-    public int getCoordY() {
-        return coordY;
-    }
-
-    public void setCoordY(int coordY) {
-        this.coordY = coordY;
-    }
-
     public int getPointsDefense() {
         return pointsDefense;
     }
@@ -38,18 +19,27 @@ public class Ville {
         this.pointsDefense = pointsDefense;
     }
 
-    public Joueur getProprietaire() {
-        return proprietaire;
+    public int getProductionParTour() {
+        return productionParTour;
     }
 
-    public void setProprietaire(Joueur proprietaire) {
-        this.proprietaire = proprietaire;
+    public void setProductionParTour(int productionParTour) {
+        this.productionParTour = productionParTour;
     }
 
     // Méthodes
-    public void produirePoints(int points) {
-        if (proprietaire != null) {
-            proprietaire.setPointsProduction(proprietaire.getPointsProduction() + points);
+    public void produirePoints() {
+        if (this.getProprietaire() != null) {
+            this.getProprietaire().ajouterPointsProduction(productionParTour);
         }
+    }
+
+    public boolean subirAttaque(int pointsAttaque) {
+        pointsDefense -= pointsAttaque;
+        if (pointsDefense <= 0) {
+            pointsDefense = 0;
+            return true; // La ville est capturée
+        }
+        return false; // La ville résiste encore
     }
 }

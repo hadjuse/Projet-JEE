@@ -1,8 +1,8 @@
 package com.projet.model;
 
 public class Montagne extends Tuile {
-    public Montagne(int coordX, int coordY) {
-        super(coordX, coordY, "montagne");
+    public Montagne(int x, int y) {
+        super(x, y, "montagne");
     }
 
     // Méthode pour vérifier si une montagne bloque le déplacement

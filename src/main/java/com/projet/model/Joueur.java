@@ -166,4 +166,8 @@ public class Joueur {
     public String getPassword() {
         return password;
     }
+
+    public void ajouterPointsProduction(int productionParTour) {
+        pointProduction += productionParTour;
+    }
 }
