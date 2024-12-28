@@ -14,10 +14,9 @@ Ce document fournit des instructions pour configurer une base de données MySQL 
 
 ### 1. Création du fichier `docker-compose.yml`
 
-Créez un fichier `docker-compose.yml` avec la configuration suivante :
+Un fichier `docker-compose.yml` est présent dans le projet avec la configuration suivante :
 
 ```yaml
-docker-compose.yml
 version: '3.8'
 services:
   mysql:
@@ -44,7 +43,7 @@ Assurez-vous que le fichier utilise des variables d'environnement pour les ident
 Créez un fichier `.env` à la racine de votre projet pour y définir les variables d'environnement :
 
 ```env
-.env
+MYSQL_URL="jdbc:mysql://localhost:3307/shared_db"
 MYSQL_ROOT_PASSWORD=VotreROOTPASSW
 MYSQL_DATABASE=Le nom de la bdd que tu veux donner
 MYSQL_USER=un user à definir
@@ -79,7 +78,6 @@ docker ps
 Utilisez un fichier temporaire pour gérer dynamiquement les informations d'environnement :
 
 ```xml
-persistence.temp.xml
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
              version="3.0">
 
@@ -102,7 +100,7 @@ persistence.temp.xml
 
 #### b. Script de mise à jour du fichier `persistence.xml`
 
-Créez un script Bash pour injecter les variables d'environnement dans le fichier temporaire et générer le fichier `persistence.xml` final :
+Executez le script Bash en écrivant sur le terminal `./updateBDDInfoConnector.sh` pour injecter les variables d'environnement dans le fichier temporaire pour générer le fichier `persistence.xml` final :
 
 ```bash
 updateBDDInfoConnector.sh
@@ -124,36 +122,7 @@ envsubst < $xml_template > $xml_output
 echo "Fichier persistence.xml mis à jour avec succès."
 ```
 
-Rendez le script exécutable :
-
-```bash
-chmod +x updateBDDInfoConnector.sh
-```
-
-Exécutez-le pour générer le fichier `persistence.xml` :
-
-```bash
-./updateBDDInfoConnector.sh
-```
-
-### 5. Création de la Base de Données Initiale
-
-Si vous devez créer des tables ou ajouter des données initiales, ajoutez un script SQL dans le fichier `createDatabase.sql` et exécutez-le dans le conteneur MySQL :
-
-```sql
-createDatabase.sql
-CREATE TABLE Joueur (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(255) NOT NULL,
-    score INT NOT NULL
-);
-```
-
-Vous pouvez maintenant ajouter dans la bdd en utilisant les formulaires
-
----
-
-### 6. Testez la Connexion
+### 5. Testez la Connexion
 
 1. Assurez-vous que le conteneur MySQL est en cours d'exécution.
 2. Lancez votre application Jakarta EE et vérifiez que la connexion à la base de données fonctionne correctement.
