@@ -2,6 +2,7 @@ package com.projet.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Grille {
     private int lignes;
@@ -9,18 +10,22 @@ public class Grille {
     private List<Tuile> tuiles;
 
     /**
-     *Initialisation d'une grille vide
-     * */
+     * Initialisation de la grille avec des types aléatoires
+     */
     public Grille(int lignes, int colonnes){
-        this.lignes =lignes;
-        this.colonnes =colonnes;
-        this.tuiles= new ArrayList<>();
+        this.lignes=lignes;
+        this.colonnes=colonnes;
+        this.tuiles=new ArrayList<>();
 
-        for(int i=0;i<lignes;i++){
-            for(int j=0;j<colonnes;j++){
-                tuiles.add(new Tuile(i,j,"vide"));
+        Random random = new Random();
+
+        for(int i=0; i<lignes; i++){
+            for(int j=0; j<colonnes; j++){
+                TypeTuile type = TypeTuile.values()[random.nextInt(TypeTuile.values().length)];
+                tuiles.add(new Tuile(i,j,type));
             }
         }
+
     }
 
     /**

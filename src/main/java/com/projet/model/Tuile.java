@@ -3,10 +3,10 @@ package com.projet.model;
 public class Tuile {
     private int x;
     private int y;
-    private String type; // "ville", "montagne", "foret", "vide"
+    private TypeTuile type; // "ville", "montagne", "foret", "vide"
     private Joueur proprietaire;
 
-    public Tuile(int x, int y, String type) {
+    public Tuile(int x, int y, TypeTuile type) {
         this.x = x;
         this.y = y;
         this.type = type;
@@ -30,11 +30,11 @@ public class Tuile {
         this.y = y;
     }
 
-    public String getType() {
+    public TypeTuile getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeTuile type) {
         this.type = type;
     }
 
