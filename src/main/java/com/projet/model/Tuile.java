@@ -1,11 +1,22 @@
 package com.projet.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Tuile {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private int x;
     private int y;
     private TypeTuile type; // "ville", "montagne", "foret", "vide"
+    @Transient
     private Joueur proprietaire;
 
+    @ManyToOne
+    private Grille grille;
+    public Tuile(){
+    }
     public Tuile(int x, int y, TypeTuile type) {
         this.x = x;
         this.y = y;
@@ -51,4 +62,19 @@ public class Tuile {
         return "Tuile{"+"x="+ x+", y="+ y+", type="+ type+'\''+'}';
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Grille getGrille() {
+        return grille;
+    }
+
+    public void setGrille(Grille grille) {
+        this.grille = grille;
+    }
 }

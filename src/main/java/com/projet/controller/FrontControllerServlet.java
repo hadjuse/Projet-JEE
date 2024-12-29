@@ -25,7 +25,10 @@ public class FrontControllerServlet extends HttpServlet {
             actionsController.creerGrille(request,response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
             System.out.println("Méthode creerGrille appelée");
-        }else{
+        } else if("afficherGrille".equals(action)) {
+            actionsController.afficherGrille(request, response);
+            request.getRequestDispatcher("grille/index.jsp").forward(request, response);
+        } else{
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action non définie");
         }
     }

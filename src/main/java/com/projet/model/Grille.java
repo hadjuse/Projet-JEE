@@ -1,14 +1,23 @@
 package com.projet.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Entity
 public class Grille {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private int lignes;
     private int colonnes;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
     private List<Tuile> tuiles;
 
+    public Grille(){
+    }
     /**
      * Initialisation de la grille avec des types aléatoires
      */
@@ -22,7 +31,9 @@ public class Grille {
         for(int i=0; i<lignes; i++){
             for(int j=0; j<colonnes; j++){
                 TypeTuile type = TypeTuile.values()[random.nextInt(TypeTuile.values().length)];
-                tuiles.add(new Tuile(i,j,type));
+                Tuile tuile = new Tuile(i,j,type);
+                tuile.setGrille(this);
+                getTuiles().add(tuile);
             }
         }
 
@@ -51,4 +62,23 @@ public class Grille {
         return tuiles;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setColonnes(int colonnes) {
+        this.colonnes = colonnes;
+    }
+
+    public void setLignes(int lignes) {
+        this.lignes = lignes;
+    }
+
+    public void setTuiles(List<Tuile> tuiles) {
+        this.tuiles = tuiles;
+    }
 }

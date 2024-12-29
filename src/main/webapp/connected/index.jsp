@@ -23,8 +23,8 @@
 <body>
 <h1>Connexion  confirmation</h1>
 <p>Vous êtes connecté en tant que <%= sessionName %></p>
-<a href="${pageContext.request.contextPath}/gameSession">Creer une partie</a> <br>
-<a href="${pageContext.request.contextPath}/FrontController?action=creerGrille">Rejoindre une partie</a> <br>
+<a href="${pageContext.request.contextPath}/createGrille">Creer une partie</a> <br>
+<a href="${pageContext.request.contextPath}/retrieveGrilles">Rejoindre une partie</a> <br>
 <a href="scores">Scores</a> <br>
 <a href="rules">Règles</a> <br>
 <a href="credits">Crédits</a> <br>
