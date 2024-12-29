@@ -20,13 +20,11 @@ public class FrontControllerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-
+        String action = (String) request.getAttribute("action");
         if("creerGrille".equals(action)){
             actionsController.creerGrille(request,response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
             System.out.println("Méthode creerGrille appelée");
-
         }else{
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action non définie");
         }

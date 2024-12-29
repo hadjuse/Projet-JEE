@@ -45,7 +45,7 @@ Créez un fichier `.env` à la racine de votre projet pour y définir les variab
 ```env
 MYSQL_URL="jdbc:mysql://localhost:3307/shared_db"
 MYSQL_ROOT_PASSWORD=VotreROOTPASSW
-MYSQL_DATABASE=Le nom de la bdd que tu veux donner
+MYSQL_DATABASE=shared_db
 MYSQL_USER=un user à definir
 MYSQL_PASSWORD=un password à definir
 PORT_MAPPING=3307
