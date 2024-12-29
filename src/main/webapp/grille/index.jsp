@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="jakarta.servlet.jsp.PageContext"%>
 <html>
 <head>
     <title>Grille</title>
@@ -51,5 +52,6 @@
 <c:if test="${grille.lignes <= 0 || grille.colonnes <= 0}">
     <p>Invalid grid dimensions.</p>
 </c:if>
+<a href="${pageContext.request.contextPath}/logout">Deconnexion</a> <br>
 </body>
 </html>

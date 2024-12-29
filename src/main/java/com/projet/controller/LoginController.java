@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -30,10 +31,13 @@ public class LoginController extends HttpServlet {
                     .setParameter("nom", nom)
                     .setParameter("mdp", Joueur.hashPassword(mdp))
                     .getSingleResult();
-            request.getSession().setAttribute("joueur", joueur);
+            HttpSession session = request.getSession();
+            session.setAttribute("joueur", joueur);
             response.sendRedirect("connected/index.jsp");
         } catch (NoResultException e) {
             response.getWriter().println("Nom d'utilisateur ou mot de passe incorrect");
+        } finally {
+            em.close();
         }
     }
 

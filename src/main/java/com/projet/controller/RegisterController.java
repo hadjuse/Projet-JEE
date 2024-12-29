@@ -22,7 +22,7 @@ public class RegisterController extends HttpServlet {
     }
 
     private static final long serialVersionUID = 1L;
-    private void setPlayerAttribut(Joueur joueur, String nom, String mdp) {
+    private void setPlayerAttribut(Joueur joueur, String nom) {
         joueur.setScore(0);
         joueur.setNbSoldats(0);
         joueur.setNbVilles(0);
@@ -30,7 +30,6 @@ public class RegisterController extends HttpServlet {
         joueur.setNbTuiles(0);
         joueur.setPointsProduction(0);
         joueur.setNom(nom);
-        joueur.setPassword(Joueur.hashPassword(mdp));
     }
 
     private void throwErrorWhenJoueurNotRegisterCorrectly(HttpServletResponse response, EntityManager em, Exception e) throws IOException {
@@ -51,9 +50,10 @@ public class RegisterController extends HttpServlet {
         try{
             em.getTransaction().begin();
             Joueur joueur = new Joueur();
-            setPlayerAttribut(joueur, nom, mdp);
+            joueur.setPassword(mdp);
+            setPlayerAttribut(joueur, nom);
             persistPlayerIntoDatabase(em, joueur);
-            response.getWriter().println("Joueur enregistré avec succès");
+            response.sendRedirect("index.jsp");
         } catch (Exception e) {
             throwErrorWhenJoueurNotRegisterCorrectly(response, em, e);
         } finally {

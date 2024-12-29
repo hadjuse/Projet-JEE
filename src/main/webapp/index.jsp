@@ -13,7 +13,7 @@
 </head>
 <body>
 <h1>Menu du jeu 4X</h1> <br>
-<a href="game">Jouer</a> <br>
+<a href="connexion">Jouer</a> <br>
 <a href="scores">Scores</a> <br>
 <a href="rules">Règles</a> <br>
 <a href="credits">Crédits</a> <br>

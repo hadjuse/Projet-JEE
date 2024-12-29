@@ -1,4 +1,5 @@
 #!/bin/bash
+
 source .env
 XML_TMP=./src/main/resources/META-INF/persistence.temp.xml
 XML_OUT=./src/main/resources/META-INF/persistence.xml
