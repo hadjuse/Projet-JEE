@@ -170,4 +170,7 @@ public class Joueur {
     public void ajouterPointsProduction(int productionParTour) {
         pointProduction += productionParTour;
     }
+    public void retirerPointsProduction(int productionParTour) {
+        pointProduction -= productionParTour;
+    }
 }

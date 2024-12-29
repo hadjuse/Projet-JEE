@@ -37,7 +37,6 @@ public class Grille {
                 .filter(t->t.getX()==xLigne && t.getY()==yColonne)
                 .findFirst()
                 .orElse(null);
-
     }
 
     public int getLignes(){
