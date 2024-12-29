@@ -8,8 +8,8 @@
             border-collapse: collapse;
         }
         td {
-            width: 40px;
-            height: 40px;
+            width: 100px;
+            height: 100px;
             border: 1px solid black;
             text-align: center;
         }
@@ -23,9 +23,25 @@
             <tr>
                 <c:forEach var="j" begin="0" end="${grille.colonnes - 1}">
                     <td>
-                        <!-- Afficher le type de la tuile -->
-                        <c:set var="tuile" value="${grille.getTuile(i, j)}"/>
-                        <c:out value="${tuile.type}"/>
+                        <c:set var="tuile" value="${grille.getTuile(i,j)}"/>
+                        <c:choose>
+                            <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
+                                <img src="imagesTuiles/chevalier.jpg" alt="Soldat" width="80" height="80">
+                            </c:when>
+                            <c:when test="${tuile.getType() == 'FORET'}">
+                                <img src="imagesTuiles/foret.jpg" alt="Forêt" width="80" height="80">
+                            </c:when>
+                            <c:when test="${tuile.getType() == 'VILLE'}">
+                                <img src="imagesTuiles/chateau.jpg" alt="Ville" width="80" height="80">
+                            </c:when>
+                            <c:when test="${tuile.getType() == 'MONTAGNE'}">
+                                <img src="imagesTuiles/montagne.jpg" alt="Montagne" width="80" height="80">
+                            </c:when>
+                            <c:otherwise>
+                                <!--Tuile vide -->
+                                <img src="imagesTuiles/vide.jpg" alt="Vide" width="80" height="80">
+                            </c:otherwise>
+                        </c:choose>
                     </td>
                 </c:forEach>
             </tr>

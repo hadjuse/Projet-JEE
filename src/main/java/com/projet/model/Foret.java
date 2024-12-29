@@ -4,7 +4,7 @@ public class Foret  extends Tuile{
     private int ressourcesProduction;
 
     public Foret(int x, int y, int ressourcesProduction) {
-        super(x,y,"foret");
+        super(x,y,TypeTuile.FORET);
         this.ressourcesProduction = ressourcesProduction;
     }
 
