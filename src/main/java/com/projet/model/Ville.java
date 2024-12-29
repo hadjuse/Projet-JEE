@@ -42,4 +42,11 @@ public class Ville extends Tuile {
         }
         return false; // La ville résiste encore
     }
+
+    public void produireSoldat() {
+        if (this.getProprietaire() != null && this.getProprietaire().getPointsProduction() >= 20) {
+            this.getProprietaire().addNbSoldats(1);
+            this.getProprietaire().retirerPointsProduction(20);
+        }
+    }
 }
