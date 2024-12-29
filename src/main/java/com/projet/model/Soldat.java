@@ -79,6 +79,7 @@ public class Soldat {
 
             case FORET:
                 int ptGagner = ((Foret) tuile).fourrager(); // Caster tuile en Foret pour appeler fourrager()
+                this.aJouer = true;
                 System.out.println("Action : Fourrager et gagner " + ptGagner + " points de production.");
                 break;
 
