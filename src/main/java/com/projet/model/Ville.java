@@ -4,9 +4,9 @@ public class Ville extends Tuile {
     private int pointsDefense;
     private int productionParTour;
 
-    public Ville(int x, int y, int productionParTour) {
+    public Ville(int x, int y, int pointsDefense, int productionParTour) {
         super(x,y,TypeTuile.VILLE);
-        this.pointsDefense = 12;
+        this.pointsDefense = pointsDefense;
         this.productionParTour = productionParTour;
     }
 

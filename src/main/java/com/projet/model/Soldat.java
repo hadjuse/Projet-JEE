@@ -9,10 +9,10 @@ public class Soldat {
     private boolean aJouer;
     private Joueur proprietaire;
 
-    public Soldat(int x, int y, int coutProduction, Joueur proprietaire) {
+    public Soldat(int x, int y, int pointsDefense, int coutProduction, Joueur proprietaire) {
         this.x = x;
         this.y = y;
-        this.pointsDefense = 6;
+        this.pointsDefense = pointsDefense;
         this.blesse = false;
         this.coutProduction = coutProduction;
         this.aJouer = false;
@@ -72,34 +72,26 @@ public class Soldat {
     public void soigner() {
         if (blesse) {
             this.blesse = false;
-            this.pointsDefense += 4; // Règle : augmenter la défense lors de la guérison
+            this.pointsDefense += 10; // Règle : augmenter la défense lors de la guérison
         }
     }
 
-    public int attaquer(){
-        return (int) (Math.random() * 6) + 1; // Math.random() donne un nombre entre 1 et 6
-    }
-
-    public void actionDeplacement(Grille grille, int x, int y) {
+    public void action(Grille grille, int x, int y) {
         Tuile tuile = grille.getTuile(x, y);
         switch (tuile.getType()) {
             case VILLE:
-                if (((Ville) tuile).subirAttaque(attaquer())) {
-                    this.setX(x);
-                    this.setY(y);
-                    tuile.setProprietaire(proprietaire);
-            };
-                this.aJouer = true;
+                // Logique pour capturer une ville
                 break;
 
-            case FORET, VIDE:
-                this.setX(x);
-                this.setY(y);
-                this.setAJouer(true);
+            case FORET:
+                int ptGagner = ((Foret) tuile).fourrager(); // Caster tuile en Foret pour appeler fourrager()
+                this.aJouer = true;
+                this.getProprietaire().ajouterPointsProduction(ptGagner);
+                System.out.println("Action : Fourrager et gagner " + ptGagner + " points de production.");
                 break;
 
             case MONTAGNE:
-                System.out.println("Déplacement impossible");
+                // Aucun déplacement ou autre action possible
                 break;
 
             case SOLDATOCCUPE:
@@ -107,34 +99,7 @@ public class Soldat {
                 break;
 
             default:
-                // null
-                break;
-        }
-    }
-
-    public void actionStatique(Grille grille, int x, int y, String action) {
-        Tuile tuile = grille.getTuile(x, y);
-        switch (action) {
-            case "GUERISON":
-                this.soigner();
-                this.aJouer = true;
-                break;
-
-            case "FORET":
-                if (tuile.getType().equals(TypeTuile.FORET)) {
-                    int ptGagner = ((Foret) tuile).fourrager(); // Caster tuile en Foret pour appeler fourrager()
-                    this.aJouer = true;
-                    this.getProprietaire().ajouterPointsProduction(ptGagner);
-                    System.out.println("Action : Fourrager et gagner " + ptGagner + " points de production.");
-                    break;
-                }
-
-            case "PASSAGE":
-                // Logique tour passe
-                break;
-
-            default:
-                // null
+                // Tuile vide
                 break;
         }
     }
