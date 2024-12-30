@@ -1,10 +1,12 @@
-package com.projet.utils.button;
+package com.projet.utils.button.actionMove;
 
-public class Button {
+import com.projet.utils.button.ButtonStrategy;
+
+public class ButtonMove {
     private ButtonStrategy buttonStrategy;
     private String label;
 
-    public Button(ButtonStrategy buttonStrategy, String label) {
+    public ButtonMove(ButtonStrategy buttonStrategy, String label) {
         setButtonStrategy(buttonStrategy);
         setLabel(label);
     }

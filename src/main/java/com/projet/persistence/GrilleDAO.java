@@ -6,7 +6,9 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import java.util.List;
-
+// TODO Sauvegarde dans bdd
+// Quand une partie se termine, la grille est sauvegardée en base de données
+// Avec la même ID.
 public class GrilleDAO {
     private EntityManagerFactory emf;
 
@@ -18,7 +20,7 @@ public class GrilleDAO {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(grille); // Persist la grille et ses tuiles grâce à CascadeType.ALL
+            em.merge(grille); // Persist la grille et ses tuiles grâce à CascadeType.ALL
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -38,6 +40,16 @@ public class GrilleDAO {
         try {
             em.getTransaction().begin();
             em.remove(grille);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+    public void creerGrille(Grille grille) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(grille); // Utilise persist pour créer une nouvelle grille
             em.getTransaction().commit();
         } finally {
             em.close();

@@ -17,18 +17,23 @@ public class FrontControllerServlet extends HttpServlet {
     public void init() throws ServletException{
         this.actionsController = new ActionsController();
     }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = (String) request.getAttribute("action");
-        if("creerGrille".equals(action)){
+        String actionPost = (String) request.getAttribute("action");
+        String actionGet = request.getParameter("action");
+        System.out.printf("Action: %s\n", actionPost);
+        if("creerGrille".equals(actionPost)){
             actionsController.creerGrille(request,response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
-            System.out.println("Méthode creerGrille appelée");
-        } else if("afficherGrille".equals(action)) {
+            System.out.println("Méthode creer Grille appelée");
+        } else if("afficherGrille".equals(actionPost)) {
             actionsController.afficherGrille(request, response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
-        } else{
+        } else if("deplacerSoldat".equals(actionGet)) {
+            System.out.printf("Action: %s\n", actionGet);
+            actionsController.deplacerSoldat(request, response);
+            request.getRequestDispatcher("grille/index.jsp").forward(request, response);
+        } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action non définie");
         }
     }
