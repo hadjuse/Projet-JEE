@@ -1,13 +1,12 @@
 package com.projet.utils.button;
 
-import com.projet.utils.button.action.MoveDown;
-import com.projet.utils.button.action.MoveLeft;
+import com.projet.utils.button.actionMove.MoveDown;
 
 public class Main {
     public static void main(String[] args) {
-        Button button = new Button(new MoveDown(), "Move down");
-        button.getButtonActionStrategy().action();
-        button.setButtonStrategy(new MoveLeft());
-        button.getButtonActionStrategy().action();
+        //ButtonMove buttonMove = new ButtonMove(new MoveDown(), "Move down");
+        //buttonMove.getButtonActionStrategy().action(, , );
+        //buttonMove.setButtonStrategy(new MoveLeft());
+        //buttonMove.getButtonActionStrategy().action(, , );
     }
 }

@@ -28,6 +28,16 @@
                         <c:choose>
                             <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
                                 <img src="imagesTuiles/chevalier.jpg" alt="Soldat" width="80" height="80">
+                                <form action="${pageContext.request.contextPath}/FrontController" method="get">
+                                    <input type="hidden" name="action" value="deplacerSoldat">
+                                    <input type="hidden" name="grilleId" value="${grille.id}">
+                                    <input type="hidden" name="xSource" value="${i}">
+                                    <input type="hidden" name="ySource" value="${j}">
+                                    <button type="submit" name="direction" value="up">Up</button>
+                                    <button type="submit" name="direction" value="down">Down</button>
+                                    <button type="submit" name="direction" value="left">Left</button>
+                                    <button type="submit" name="direction" value="right">Right</button>
+                                </form>
                             </c:when>
                             <c:when test="${tuile.getType() == 'FORET'}">
                                 <img src="imagesTuiles/foret.jpg" alt="Forêt" width="80" height="80">
@@ -39,7 +49,6 @@
                                 <img src="imagesTuiles/montagne.jpg" alt="Montagne" width="80" height="80">
                             </c:when>
                             <c:otherwise>
-                                <!--Tuile vide -->
                                 <img src="imagesTuiles/vide.jpg" alt="Vide" width="80" height="80">
                             </c:otherwise>
                         </c:choose>
@@ -52,6 +61,6 @@
 <c:if test="${grille.lignes <= 0 || grille.colonnes <= 0}">
     <p>Invalid grid dimensions.</p>
 </c:if>
-<a href="${pageContext.request.contextPath}/logout">Deconnexion</a> <br>
+<a href="${pageContext.request.contextPath}/logout">Déconnexion</a> <br>
 </body>
 </html>
