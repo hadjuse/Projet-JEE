@@ -72,15 +72,24 @@ public class Soldat {
     public void soigner() {
         if (blesse) {
             this.blesse = false;
-            this.pointsDefense += 10; // Règle : augmenter la défense lors de la guérison
+            this.pointsDefense += 4; // Règle : augmenter la défense lors de la guérison
         }
+    }
+
+    public int attaquer(){
+        return (int) (Math.random() * 6) + 1; // Math.random() donne un nombre entre 1 et 6
     }
 
     public void actionDeplacement(Grille grille, int x, int y) {
         Tuile tuile = grille.getTuile(x, y);
         switch (tuile.getType()) {
             case VILLE:
-                // Logique pour capturer une ville
+                if (((Ville) tuile).subirAttaque(attaquer())) {
+                    this.setX(x);
+                    this.setY(y);
+                    tuile.setProprietaire(proprietaire);
+            };
+                this.aJouer = true;
                 break;
 
             case FORET, VIDE:
