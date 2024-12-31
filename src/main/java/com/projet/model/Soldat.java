@@ -1,8 +1,6 @@
 package com.projet.model;
 
-public class Soldat {
-    private int x;
-    private int y;
+public class Soldat extends Tuile{
     private int pointsDefense;
     private boolean blesse;
     private int coutProduction;
@@ -10,8 +8,7 @@ public class Soldat {
     private final Joueur proprietaire;
 
     public Soldat(int x, int y, Joueur proprietaire) {
-        this.x = x;
-        this.y = y;
+        super(x,y,TypeTuile.SOLDATOCCUPE);
         this.pointsDefense = 6;
         this.blesse = false;
         this.coutProduction = 12;
@@ -20,22 +17,6 @@ public class Soldat {
     }
 
     // Getters et Setters
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public int getPointsDefense() {
         return pointsDefense;
     }
@@ -80,6 +61,15 @@ public class Soldat {
         return (int) (Math.random() * 6) + 1; // Math.random() donne un nombre entre 1 et 6
     }
 
+    public boolean subirAttaque(int pointsAttaque) {
+        pointsDefense -= pointsAttaque;
+        if (pointsDefense <= 0) {
+            pointsDefense = 0;
+            return true; // La ville est capturée
+        }
+        return false; // La ville résiste encore
+    }
+
     public void actionDeplacement(Grille grille, int x, int y) {
         Tuile tuile = grille.getTuile(x, y);
         switch (tuile.getType()) {
@@ -104,7 +94,12 @@ public class Soldat {
                 break;
 
             case SOLDATOCCUPE, FORETSOLDAT:
-                // Logique pour attaquer un soldat
+                if ((((Soldat) tuile).subirAttaque(attaquer()))) {
+                    this.setX(x);
+                    this.setY(y);
+                    tuile.setProprietaire(proprietaire);
+                };
+                this.aJouer = true;
                 break;
 
             default:
