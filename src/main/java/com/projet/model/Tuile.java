@@ -15,6 +15,10 @@ public class Tuile {
 
     @ManyToOne
     private Grille grille;
+    @Transient
+    private Soldat soldat;
+    @Transient
+    private Ville ville;
     public Tuile(){
     }
     public Tuile(int x, int y, TypeTuile type) {
@@ -76,5 +80,21 @@ public class Tuile {
 
     public void setGrille(Grille grille) {
         this.grille = grille;
+    }
+
+    public Soldat getSoldat() {
+        return soldat;
+    }
+
+    public void setSoldat(Soldat soldat) {
+        this.soldat = soldat;
+    }
+
+    public Ville getVille() {
+        return ville;
+    }
+
+    public void setVille(Ville ville) {
+        this.ville = ville;
     }
 }

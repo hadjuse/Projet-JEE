@@ -27,7 +27,7 @@ public class Grille {
         this.tuiles=new ArrayList<>();
 
         Random random = new Random();
-
+/*
         for(int i=0; i<lignes; i++){
             for(int j=0; j<colonnes; j++){
                 TypeTuile type = TypeTuile.values()[random.nextInt(TypeTuile.values().length)];
@@ -37,6 +37,15 @@ public class Grille {
             }
         }
 
+ */
+        for(int i=0; i<lignes; i++){
+            for(int j=0; j<colonnes; j++){
+                TypeTuile type = TypeTuile.VIDE;
+                Tuile tuile = new Tuile(i,j,type);
+                tuile.setGrille(this);
+                getTuiles().add(tuile);
+            }
+        }
     }
 
     /**
@@ -49,7 +58,24 @@ public class Grille {
                 .findFirst()
                 .orElse(null);
     }
-
+    public void ajouterSoldat(int x, int y, Joueur joueur) {
+        Tuile tuile = getTuile(x, y);
+        if (tuile != null && tuile.getType() == TypeTuile.VIDE) {
+            Soldat soldat = new Soldat(x, y, 10, joueur); // Exemple de coût de production
+            tuile.setSoldat(soldat);
+            tuile.setType(TypeTuile.SOLDATOCCUPE);
+            tuile.getSoldat().setProprietaire(joueur);
+        }
+    }
+    public void ajouterVille(int x, int y, Joueur joueur) {
+        Tuile tuile = getTuile(x, y);
+        if (tuile != null && tuile.getType() == TypeTuile.VIDE) {
+            Ville ville = new Ville(x, y, 3);
+            tuile.setVille(ville);
+            tuile.setType(TypeTuile.VILLE);
+            tuile.getVille().setProprietaire(joueur);
+        }
+    }
     public int getLignes(){
         return lignes;
     }

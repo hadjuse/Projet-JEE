@@ -1,6 +1,6 @@
 package com.projet.model;
-
-public class Soldat {
+// TODO instancier soldat quand on creer la map et qu'il soit accessible tout le temps
+public class Soldat{
     private int x;
     private int y;
     private int pointsDefense;
