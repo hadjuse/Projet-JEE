@@ -19,6 +19,6 @@
     <label for="mdp">Password :</label>
     <input type="password" name="mdp" id="mdp" required>
     <br>
-    <buttonMove type="submit">Register</buttonMove>
+    <button type="submit">Register</button>
 </form>
 </body>

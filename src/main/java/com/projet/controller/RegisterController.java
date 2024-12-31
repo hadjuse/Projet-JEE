@@ -1,10 +1,7 @@
 package com.projet.controller;
 
 import com.projet.model.Joueur;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.PersistenceContext;
+import com.projet.persistence.JoueurDAO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,14 +11,14 @@ import java.io.IOException;
 
 @WebServlet("/register")
 public class RegisterController extends HttpServlet {
-    private EntityManagerFactory entityManager;
+    private static final long serialVersionUID = 1L;
+    private JoueurDAO joueurDAO;
 
     @Override
     public void init() {
-        entityManager = Persistence.createEntityManagerFactory("jeuPU");
+        joueurDAO = new JoueurDAO();
     }
 
-    private static final long serialVersionUID = 1L;
     private void setPlayerAttribut(Joueur joueur, String nom) {
         joueur.setScore(0);
         joueur.setNbSoldats(0);
@@ -32,40 +29,22 @@ public class RegisterController extends HttpServlet {
         joueur.setNom(nom);
     }
 
-    private void throwErrorWhenJoueurNotRegisterCorrectly(HttpServletResponse response, EntityManager em, Exception e) throws IOException {
-        em.getTransaction().rollback();
-        response.getWriter().println("Erreur lors de l'enregistrement du joueur"+ e.getMessage());
-    }
-    private void persistPlayerIntoDatabase(EntityManager em, Joueur joueur) {
-        em.persist(joueur);
-        em.getTransaction().commit();
+    private void throwErrorWhenJoueurNotRegisterCorrectly(HttpServletResponse response, Exception e) throws IOException {
+        response.getWriter().println("Erreur lors de l'enregistrement du joueur: " + e.getMessage());
     }
 
     @Override
-    @PersistenceContext
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws SecurityException, IOException {
         String nom = request.getParameter("nom");
         String mdp = request.getParameter("mdp");
-        EntityManager em = entityManager.createEntityManager();
-        try{
-            em.getTransaction().begin();
+        try {
             Joueur joueur = new Joueur();
             joueur.setPassword(mdp);
             setPlayerAttribut(joueur, nom);
-            persistPlayerIntoDatabase(em, joueur);
+            joueurDAO.creerJoueur(joueur);
             response.sendRedirect("index.jsp");
         } catch (Exception e) {
-            throwErrorWhenJoueurNotRegisterCorrectly(response, em, e);
-        } finally {
-            em.close();
-        }
-    }
-
-
-    @Override
-    public void destroy() {
-        if(entityManager != null && entityManager.isOpen()) {
-            entityManager.close();
+            throwErrorWhenJoueurNotRegisterCorrectly(response, e);
         }
     }
 }
