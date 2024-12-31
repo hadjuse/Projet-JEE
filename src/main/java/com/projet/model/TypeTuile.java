@@ -4,6 +4,8 @@ public enum TypeTuile {
     VIDE,
     SOLDATOCCUPE,
     FORET,
+    FORETSOLDAT,
     VILLE,
+    VILLESOLDAT,
     MONTAGNE;
 }

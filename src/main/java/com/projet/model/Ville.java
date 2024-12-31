@@ -4,10 +4,10 @@ public class Ville extends Tuile {
     private int pointsDefense;
     private int productionParTour;
 
-    public Ville(int x, int y, int productionParTour) {
+    public Ville(int x, int y) {
         super(x,y,TypeTuile.VILLE);
         this.pointsDefense = 12;
-        this.productionParTour = productionParTour;
+        this.productionParTour = 3;
     }
 
     // Getters et Setters

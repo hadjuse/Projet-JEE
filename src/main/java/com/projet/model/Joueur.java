@@ -12,9 +12,6 @@ public class Joueur {
     private String nom;
 
     @Column(nullable = false)
-    private int score;
-
-    @Column(nullable = false)
     private int nbSoldats;
 
     @Column(nullable = false)
@@ -75,10 +72,6 @@ public class Joueur {
         return this.nom;
     }
 
-    public int getScore() {
-        return this.score;
-    }
-
     public int getNbSoldats() {
         return this.nbSoldats;
     }
@@ -111,10 +104,6 @@ public class Joueur {
         this.nom = nom;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     public void setNbSoldats(int nbSoldats) {
         this.nbSoldats = nbSoldats;
     }
@@ -131,10 +120,6 @@ public class Joueur {
         this.nbTuiles = nbTuiles;
     }
 
-    public void addScore(int score) {
-        this.score += score;
-    }
-
     public void addNbSoldats(int nbSoldats) {
         this.nbSoldats += nbSoldats;
     }
@@ -149,10 +134,6 @@ public class Joueur {
 
     public void addNbTuiles(int nbTuiles) {
         this.nbTuiles += nbTuiles;
-    }
-
-    public void removeScore(int score) {
-        this.score -= score;
     }
 
     public void removeNbSoldats(int nbSoldats) {

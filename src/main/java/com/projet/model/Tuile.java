@@ -9,7 +9,7 @@ public class Tuile {
     private Long id;
     private int x;
     private int y;
-    private TypeTuile type; // "ville", "montagne", "foret", "vide"
+    private TypeTuile type; // "ville", 'villesoldat", "montagne", "foret", "foretsoldat", "vide"
     @Transient
     private Joueur proprietaire;
 

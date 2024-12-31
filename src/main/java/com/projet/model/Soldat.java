@@ -7,14 +7,14 @@ public class Soldat {
     private boolean blesse;
     private int coutProduction;
     private boolean aJouer;
-    private Joueur proprietaire;
+    private final Joueur proprietaire;
 
-    public Soldat(int x, int y, int coutProduction, Joueur proprietaire) {
+    public Soldat(int x, int y, Joueur proprietaire) {
         this.x = x;
         this.y = y;
         this.pointsDefense = 6;
         this.blesse = false;
-        this.coutProduction = coutProduction;
+        this.coutProduction = 12;
         this.aJouer = false;
         this.proprietaire = proprietaire;
     }
@@ -83,11 +83,12 @@ public class Soldat {
     public void actionDeplacement(Grille grille, int x, int y) {
         Tuile tuile = grille.getTuile(x, y);
         switch (tuile.getType()) {
-            case VILLE:
+            case VILLE, VILLESOLDAT:
                 if (((Ville) tuile).subirAttaque(attaquer())) {
                     this.setX(x);
                     this.setY(y);
                     tuile.setProprietaire(proprietaire);
+                    tuile.setType(TypeTuile.VILLESOLDAT);
             };
                 this.aJouer = true;
                 break;
@@ -102,7 +103,7 @@ public class Soldat {
                 System.out.println("Déplacement impossible");
                 break;
 
-            case SOLDATOCCUPE:
+            case SOLDATOCCUPE, FORETSOLDAT:
                 // Logique pour attaquer un soldat
                 break;
 
@@ -121,7 +122,7 @@ public class Soldat {
                 break;
 
             case "FORET":
-                if (tuile.getType().equals(TypeTuile.FORET)) {
+                if (tuile.getType().equals(TypeTuile.FORETSOLDAT)) {
                     int ptGagner = ((Foret) tuile).fourrager(); // Caster tuile en Foret pour appeler fourrager()
                     this.aJouer = true;
                     this.getProprietaire().ajouterPointsProduction(ptGagner);

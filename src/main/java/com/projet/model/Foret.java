@@ -3,9 +3,9 @@ package com.projet.model;
 public class Foret extends Tuile{
     private int ressourcesProduction;
 
-    public Foret(int x, int y, int ressourcesProduction) {
+    public Foret(int x, int y) {
         super(x,y,TypeTuile.FORET);
-        this.ressourcesProduction = ressourcesProduction;
+        this.ressourcesProduction = 6;
     }
 
     // Getters et Setters
