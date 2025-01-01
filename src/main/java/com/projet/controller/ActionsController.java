@@ -44,7 +44,7 @@ public class ActionsController {
 
             // Ajouter un deuxième soldat avec un autre joueur comme propriétaire
             Joueur autreJoueur = new Joueur(); // Vous devez récupérer ou créer un autre joueur
-            autreJoueur.setNom("Joueur 2");
+            autreJoueur.setNom("Joueur 9");
             autreJoueur.setPassword("password");
             getJoueurDAO().creerJoueur(autreJoueur);
             grille.ajouterSoldat(7, 7, autreJoueur);

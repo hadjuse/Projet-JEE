@@ -16,8 +16,7 @@ public class MoveMethod {
             return;
         }
 
-        EntityManager em = grilleDAO.getEmf().createEntityManager();
-        try {
+        try (EntityManager em = grilleDAO.getEmf().createEntityManager()) {
             em.getTransaction().begin();
 
             Tuile source = grille.getTuile(xSource, ySource);
@@ -35,6 +34,7 @@ public class MoveMethod {
             Soldat soldat = source.getSoldat();
             if (soldat == null) {
                 System.out.println("Aucun soldat sur la tuile source.");
+                em.getTransaction().rollback();
                 return;
             }
 
@@ -54,12 +54,7 @@ public class MoveMethod {
 
             em.getTransaction().commit();
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
-        } finally {
-            em.close();
+            e.printStackTrace();
         }
     }
 
