@@ -15,10 +15,18 @@ public class JoueurDAO {
 
     public void creerJoueur(Joueur joueur) {
         EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.persist(joueur);
-        em.getTransaction().commit();
-        em.close();
+        try {
+            em.getTransaction().begin();
+            em.persist(joueur);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        } finally {
+            em.close();
+        }
     }
 
     public Joueur trouverJoueurParId(Long id) {

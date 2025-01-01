@@ -28,17 +28,20 @@
                         <c:choose>
                             <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
                                 <img src="imagesTuiles/chevalier.jpg" alt="Soldat" width="80" height="80">
-                                <form action="${pageContext.request.contextPath}/FrontController" method="get">
-                                    <input type="hidden" name="action" value="deplacerSoldat">
-                                    <input type="hidden" name="grilleId" value="${grille.id}">
-                                    <input type="hidden" name="xSource" value="${i}">
-                                    <input type="hidden" name="ySource" value="${j}">
-                                    <button type="submit" name="direction" value="up">Up</button>
-                                    <button type="submit" name="direction" value="down">Down</button>
-                                    <button type="submit" name="direction" value="left">Left</button>
-                                    <button type="submit" name="direction" value="right">Right</button>
-                                </form>
+                                <c:if test="${tuile.soldat.proprietaire.id == joueur.id}">
+                                    <form action="${pageContext.request.contextPath}/FrontController" method="get">
+                                        <input type="hidden" name="action" value="deplacerSoldat">
+                                        <input type="hidden" name="grilleId" value="${grille.id}">
+                                        <input type="hidden" name="xSource" value="${i}">
+                                        <input type="hidden" name="ySource" value="${j}">
+                                        <button type="submit" name="direction" value="up">Up</button>
+                                        <button type="submit" name="direction" value="down">Down</button>
+                                        <button type="submit" name="direction" value="left">Left</button>
+                                        <button type="submit" name="direction" value="right">Right</button>
+                                    </form>
+                                </c:if>
                             </c:when>
+
                             <c:when test="${tuile.getType() == 'FORET'}">
                                 <img src="imagesTuiles/foret.jpg" alt="Forêt" width="80" height="80">
                             </c:when>
