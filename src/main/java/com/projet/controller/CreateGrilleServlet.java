@@ -30,6 +30,7 @@ public class CreateGrilleServlet extends HttpServlet {
             response.sendRedirect("index.jsp");
             return;
         }
+        setPlayerAttributes(sessionPlayer, (Joueur) sessionPlayer.getAttribute("joueur"));
         request.setAttribute("action", "creerGrille");
         System.out.println(request.getAttribute("action"));
         System.out.println("Forwarding request to /FrontController");

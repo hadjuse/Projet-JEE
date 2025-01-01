@@ -1,6 +1,7 @@
 package com.projet.controller;
 
 import com.projet.model.Grille;
+import com.projet.model.Joueur;
 import com.projet.persistence.GrilleDAO;
 import com.projet.utils.button.ButtonStrategy;
 import com.projet.utils.button.actionMove.MoveDown;
@@ -11,6 +12,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -26,9 +28,12 @@ public class ActionsController {
     public void creerGrille(HttpServletRequest request, HttpServletResponse response){
         int lignes = 8;
         int colonnes = 8;
-
+        HttpSession session = request.getSession(false);
         Grille grille = new Grille(lignes,colonnes);
+        Joueur joueur = (Joueur) session.getAttribute("joueur");
+        grille.ajouterSoldat(0,0, joueur);
         getGrilleDAO().creerGrille(grille);
+
         request.setAttribute("grille",grille);
     }
 
