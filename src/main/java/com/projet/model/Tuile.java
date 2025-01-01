@@ -15,7 +15,8 @@ public class Tuile {
 
     @ManyToOne
     private Grille grille;
-    @Transient
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "soldat_id", unique = true)
     private Soldat soldat;
     @Transient
     private Ville ville;

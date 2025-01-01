@@ -1,5 +1,9 @@
 package com.projet.model;
+
+import jakarta.persistence.*;
+
 // TODO instancier soldat quand on creer la map et qu'il soit accessible tout le temps
+@Entity
 public class Soldat{
     private int x;
     private int y;
@@ -7,7 +11,12 @@ public class Soldat{
     private boolean blesse;
     private int coutProduction;
     private boolean aJouer;
+    @ManyToOne
     private Joueur proprietaire;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
 
     public Soldat(int x, int y, int coutProduction, Joueur proprietaire) {
         this.x = x;
@@ -17,6 +26,10 @@ public class Soldat{
         this.coutProduction = coutProduction;
         this.aJouer = false;
         this.proprietaire = proprietaire;
+    }
+
+    public Soldat() {
+
     }
 
     // Getters et Setters
@@ -137,5 +150,13 @@ public class Soldat{
                 // null
                 break;
         }
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
