@@ -33,7 +33,7 @@ public class ActionsController {
         Joueur joueur = (Joueur) session.getAttribute("joueur");
         grille.ajouterSoldat(0,0, joueur);
         getGrilleDAO().creerGrille(grille);
-
+        grille.getTuile(0,0).getSoldat();
         request.setAttribute("grille",grille);
     }
 
