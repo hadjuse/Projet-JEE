@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 public class Joueur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String nom;
@@ -59,7 +59,7 @@ public class Joueur {
     public void setPointsProduction(int pointProduction) {
         this.pointProduction = pointProduction;
     }
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
