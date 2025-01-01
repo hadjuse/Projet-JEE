@@ -93,15 +93,24 @@ public class Soldat{
         return (int) (Math.random() * 6) + 1; // Math.random() donne un nombre entre 1 et 6
     }
 
+    public boolean subirAttaque(int pointsAttaque) {
+        pointsDefense -= pointsAttaque;
+        if (pointsDefense <= 0) {
+            pointsDefense = 0;
+            return true; // La ville est capturée
+        }
+        return false; // La ville résiste encore
+    }
     public void actionDeplacement(Grille grille, int x, int y) {
         Tuile tuile = grille.getTuile(x, y);
         switch (tuile.getType()) {
-            case VILLE:
+            case VILLE, VILLESOLDAT:
                 if (((Ville) tuile).subirAttaque(attaquer())) {
                     this.setX(x);
                     this.setY(y);
                     tuile.setProprietaire(proprietaire);
-            };
+                    tuile.setType(TypeTuile.VILLESOLDAT);
+                };
                 this.aJouer = true;
                 break;
 
@@ -115,8 +124,13 @@ public class Soldat{
                 System.out.println("Déplacement impossible");
                 break;
 
-            case SOLDATOCCUPE:
-                // Logique pour attaquer un soldat
+            case SOLDATOCCUPE, FORETSOLDAT:
+                if (tuile.getSoldat().subirAttaque(attaquer())) {
+                    this.setX(x);
+                    this.setY(y);
+                    tuile.setProprietaire(proprietaire);
+                };
+                this.aJouer = true;
                 break;
 
             default:
@@ -134,7 +148,7 @@ public class Soldat{
                 break;
 
             case "FORET":
-                if (tuile.getType().equals(TypeTuile.FORET)) {
+                if (tuile.getType().equals(TypeTuile.FORETSOLDAT)) {
                     int ptGagner = ((Foret) tuile).fourrager(); // Caster tuile en Foret pour appeler fourrager()
                     this.aJouer = true;
                     this.getProprietaire().ajouterPointsProduction(ptGagner);
