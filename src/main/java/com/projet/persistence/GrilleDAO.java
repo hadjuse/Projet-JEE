@@ -4,16 +4,19 @@ import com.projet.model.Grille;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
 public class GrilleDAO {
+    @PersistenceContext
     private EntityManagerFactory emf;
 
     public GrilleDAO() {
         emf = Persistence.createEntityManagerFactory("jeuPU"); // Correspond à votre persistence.xml
     }
-
+    @Transactional
     public void enregistrerGrille(Grille grille) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
@@ -22,12 +25,13 @@ public class GrilleDAO {
         }
     }
 
+    @Transactional
     public Grille trouverGrilleParId(Long id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(Grille.class, id);
         }
     }
-
+    @Transactional
     public void supprimerGrille(Grille grille) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
@@ -36,6 +40,7 @@ public class GrilleDAO {
         }
     }
 
+    @Transactional
     public void creerGrille(Grille grille) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
@@ -43,7 +48,7 @@ public class GrilleDAO {
             em.getTransaction().commit();
         }
     }
-
+    @Transactional
     public List<Grille> listerGrilles() {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("SELECT g FROM Grille g", Grille.class).getResultList();

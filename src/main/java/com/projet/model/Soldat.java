@@ -149,7 +149,7 @@ public class Soldat{
 
             case "FORET":
                 if (tuile.getType().equals(TypeTuile.FORETSOLDAT)) {
-                    int ptGagner = ((Foret) tuile).fourrager(); // Caster tuile en Foret pour appeler fourrager()
+                    int ptGagner = tuile.getForet().fourrager();
                     this.aJouer = true;
                     this.getProprietaire().ajouterPointsProduction(ptGagner);
                     System.out.println("Action : Fourrager et gagner " + ptGagner + " points de production.");

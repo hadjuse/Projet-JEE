@@ -18,6 +18,10 @@ public class Tuile {
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "soldat_id", unique = true)
     private Soldat soldat;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "foret_id", unique = true)
+    private Foret foret;
     @Transient
     private Ville ville;
     public Tuile(){
@@ -97,5 +101,13 @@ public class Tuile {
 
     public void setVille(Ville ville) {
         this.ville = ville;
+    }
+
+    public Foret getForet() {
+        return foret;
+    }
+
+    public void setForet(Foret foret) {
+        this.foret = foret;
     }
 }

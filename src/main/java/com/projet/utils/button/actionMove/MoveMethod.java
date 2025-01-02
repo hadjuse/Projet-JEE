@@ -38,6 +38,24 @@ public class MoveMethod {
                 return;
             }
 
+            // Gérer la collision avec la forêt
+            if (destination.getType() == TypeTuile.FORET) {
+                System.out.println("Collision avec la forêt détectée.");
+                // Logique de gestion de la collision avec la forêt
+                // Par exemple, empêcher le déplacement ou appliquer des effets spécifiques
+                em.getTransaction().rollback();
+                return;
+            }
+
+            // Gérer la collision avec la montagne
+            if (destination.getType() == TypeTuile.MONTAGNE) {
+                System.out.println("Collision avec la montagne détectée.");
+                // Logique de gestion de la collision avec la montagne
+                // Par exemple, empêcher le déplacement ou appliquer des effets spécifiques
+                em.getTransaction().rollback();
+                return;
+            }
+
             // Mise à jour des relations
             source.setSoldat(null);
             source.setType(TypeTuile.VIDE);
@@ -46,8 +64,6 @@ public class MoveMethod {
             destination.setType(TypeTuile.SOLDATOCCUPE);
 
             // Mise à jour des coordonnées du soldat
-            //soldat.setX(xDest);
-            //soldat.setY(yDest);
             soldat.actionDeplacement(grille, xDest, yDest);
             // Persiste les modifications
             grilleDAO.enregistrerGrille(grille);

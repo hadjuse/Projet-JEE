@@ -1,18 +1,17 @@
 package com.projet.persistence;
 
 import com.projet.model.Joueur;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 public class JoueurDAO {
+    @PersistenceContext
     private EntityManagerFactory emf;
 
     public JoueurDAO() {
         emf = Persistence.createEntityManagerFactory("jeuPU");
     }
-
+    @Transactional
     public void creerJoueur(Joueur joueur) {
         EntityManager em = emf.createEntityManager();
         try {
@@ -29,39 +28,41 @@ public class JoueurDAO {
         }
     }
 
+    @Transactional
     public Joueur trouverJoueurParId(Long id) {
-        EntityManager em = emf.createEntityManager();
-        Joueur joueur = em.find(Joueur.class, id);
-        em.close();
-        return joueur;
-    }
-
-    public Joueur trouverJoueurParNomEtMdp(String nom, String mdp) throws NoResultException {
-        EntityManager em = emf.createEntityManager();
-        Joueur joueur = em.createQuery("SELECT j FROM Joueur j WHERE j.nom = :nom AND j.password = :mdp", Joueur.class)
-                .setParameter("nom", nom)
-                .setParameter("mdp", mdp)
-                .getSingleResult();
-        em.close();
-        return joueur;
-    }
-
-    public void mettreAJourJoueur(Joueur joueur) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        em.merge(joueur);
-        em.getTransaction().commit();
-        em.close();
-    }
-
-    public void supprimerJoueur(Long id) {
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-        Joueur joueur = em.find(Joueur.class, id);
-        if (joueur != null) {
-            em.remove(joueur);
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.find(Joueur.class, id);
         }
-        em.getTransaction().commit();
-        em.close();
+    }
+
+    @Transactional
+    public Joueur trouverJoueurParNomEtMdp(String nom, String mdp) throws NoResultException {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT j FROM Joueur j WHERE j.nom = :nom AND j.password = :mdp", Joueur.class)
+                    .setParameter("nom", nom)
+                    .setParameter("mdp", mdp)
+                    .getSingleResult();
+        }
+    }
+
+    @Transactional
+    public void mettreAJourJoueur(Joueur joueur) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.merge(joueur);
+            em.getTransaction().commit();
+        }
+    }
+
+    @Transactional
+    public void supprimerJoueur(Long id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            Joueur joueur = em.find(Joueur.class, id);
+            if (joueur != null) {
+                em.remove(joueur);
+            }
+            em.getTransaction().commit();
+        }
     }
 }
