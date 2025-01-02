@@ -5,6 +5,7 @@
         <class>com.projet.model.Joueur</class>
         <class>com.projet.model.Soldat</class> <!-- Ajout de Soldat -->
         <class>com.projet.model.Ville</class> <!-- Ajoutez les autres entités si nécessaire -->
+        <class>com.projet.model.Foret</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="$DB_URL" />
             <property name="jakarta.persistence.jdbc.user" value="$DB_USR" />

@@ -44,11 +44,14 @@ public class ActionsController {
 
             // Ajouter un deuxième soldat avec un autre joueur comme propriétaire
             Joueur autreJoueur = new Joueur(); // Vous devez récupérer ou créer un autre joueur
-            autreJoueur.setNom("Joueur 11");
+            autreJoueur.setNom("Joueur" +(int) (Math.random() * 1000));
             autreJoueur.setPassword("password");
             getJoueurDAO().creerJoueur(autreJoueur);
             grille.ajouterSoldat(7, 7, autreJoueur);
 
+            // ajout d'une foret
+            grille.ajouterForet(1, 3, 3);
+            // Sauvegarder la grille
             getGrilleDAO().creerGrille(grille);
             request.setAttribute("grille", grille);
 
@@ -110,6 +113,7 @@ public class ActionsController {
         request.setAttribute("grille", grille);
         //forwardToFrontController(request, response, "deplacerSoldat");
     }
+
 
     public void setGrilleDAO(GrilleDAO grilleDAO) {
         this.grilleDAO = grilleDAO;

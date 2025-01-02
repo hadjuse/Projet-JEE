@@ -76,6 +76,31 @@ public class Grille {
             tuile.getVille().setProprietaire(joueur);
         }
     }
+    public void ajouterForet(int x, int y, int ressourcesProduction) {
+        Tuile tuile = getTuile(x, y);
+        if (tuile != null && tuile.getType() == TypeTuile.VIDE) {
+            Foret foret = new Foret(x, y, ressourcesProduction);
+            tuile.setForet(foret);
+            tuile.setType(TypeTuile.FORET);
+        }
+    }
+    public boolean isAdjacentToType(int x, int y, String type) {
+        // Vérifier les tuiles adjacentes (haut, bas, gauche, droite)
+        if (x > 0 && getTuile(x - 1, y).getType().name().equals(type)) {
+            return true;
+        }
+        if (x < lignes - 1 && getTuile(x + 1, y).getType().name().equals(type)) {
+            return true;
+        }
+        if (y > 0 && getTuile(x, y - 1).getType().name().equals(type)) {
+            return true;
+        }
+        if (y < colonnes - 1 && getTuile(x, y + 1).getType().name().equals(type)) {
+            return true;
+        }
+        return false;
+    }
+
     public int getLignes(){
         return lignes;
     }

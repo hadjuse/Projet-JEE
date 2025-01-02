@@ -1,11 +1,20 @@
 package com.projet.model;
 
-public class Foret extends Tuile{
-    private int ressourcesProduction;
+import jakarta.persistence.*;
 
+@Entity
+public class Foret{
+    private int ressourcesProduction;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private int x;
+    private int y;
     public Foret(int x, int y, int ressourcesProduction) {
-        super(x,y,TypeTuile.FORET);
         this.ressourcesProduction = ressourcesProduction;
+    }
+    public Foret() {
+
     }
 
     // Getters et Setters
@@ -22,5 +31,13 @@ public class Foret extends Tuile{
         int pointsGagnes = ressourcesProduction;
         ressourcesProduction = 0; // Une fois la forêt exploitée, elle ne produit plus
         return pointsGagnes;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
