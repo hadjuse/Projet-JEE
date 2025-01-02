@@ -46,9 +46,9 @@ public class MoveMethod {
             destination.setType(TypeTuile.SOLDATOCCUPE);
 
             // Mise à jour des coordonnées du soldat
-            soldat.setX(xDest);
-            soldat.setY(yDest);
-
+            //soldat.setX(xDest);
+            //soldat.setY(yDest);
+            soldat.actionDeplacement(grille, xDest, yDest);
             // Persiste les modifications
             grilleDAO.enregistrerGrille(grille);
 
