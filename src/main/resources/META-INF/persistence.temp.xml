@@ -15,7 +15,15 @@
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
             <property name="hibernate.use_sql_comments" value="true" />
+
+
+            <!-- Configuration de HikariCP -->
             <property name="hibernate.hikari.maximumPoolSize" value="50"/>
+            <property name="hibernate.hikari.minimumIdle" value="5"/>
+            <property name="hibernate.hikari.idleTimeout" value="30000"/>
+            <property name="hibernate.hikari.connectionTimeout" value="20000"/>
+            <property name="hibernate.hikari.maxLifetime" value="1800000"/>
+            <property name="hibernate.hikari.registerMbeans" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
