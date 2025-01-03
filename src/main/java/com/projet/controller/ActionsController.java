@@ -40,9 +40,8 @@ public class ActionsController {
 
         // Ajouter le premier soldat avec le joueur actuel comme propriétaire
         grille.ajouterSoldat(0, 0, joueur);
-
         // Récupérer un autre joueur existant
-        Joueur autreJoueur = getJoueurDAO().trouverJoueurParNomEtMdp("hadjuse3", Joueur.hashPassword("password"));
+        Joueur autreJoueur = getJoueurDAO().trouverJoueurParNom("hadjuse3");
         grille.ajouterSoldat(7, 7, autreJoueur);
 
         // ajout d'une foret
@@ -74,6 +73,7 @@ public class ActionsController {
 
     public void deplacerSoldat(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String grilleId = request.getParameter("grilleId");
+        Long grilleIdLong = Long.parseLong(grilleId);
         int xSource = Integer.parseInt(request.getParameter("xSource"));
         int ySource = Integer.parseInt(request.getParameter("ySource"));
         String direction = request.getParameter("direction");
@@ -138,5 +138,18 @@ public class ActionsController {
         } catch (Exception e) {
             throw new IOException("Erreur lors de la redirection vers FrontController", e);
         }
+    }
+
+    public void collecterResources(HttpServletRequest request, HttpServletResponse response) {
+        String grilleId = request.getParameter("grilleId");
+        int xSource = Integer.parseInt(request.getParameter("xSource"));
+        int ySource = Integer.parseInt(request.getParameter("ySource"));
+        Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
+        Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+        joueur.ajouterPointsProduction(grille.getTuile(xSource, ySource).getForet().getRessourcesProduction());
+        System.out.println("Ressources collectées avec succès "+joueur.getPointsProduction());
+        joueurDAO.mettreAJourJoueur(joueur);
+        request.setAttribute("grille", grille);
+        request.setAttribute("joueur", joueur);
     }
 }

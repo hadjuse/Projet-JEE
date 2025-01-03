@@ -6,7 +6,7 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-public class ForetDAO {
+public class ForetDAO implements AutoCloseable {
     @PersistenceContext
     private EntityManagerFactory emf;
 
@@ -75,4 +75,8 @@ public class ForetDAO {
         }
     }
 
+    @Override
+    public void close() throws Exception {
+        emf.close();
+    }
 }

@@ -46,8 +46,6 @@ public class MoveMethod {
                 em.getTransaction().rollback();
                 return;
             }
-
-            // Gérer la collision avec la montagne
             if (destination.getType() == TypeTuile.MONTAGNE) {
                 System.out.println("Collision avec la montagne détectée.");
                 // Logique de gestion de la collision avec la montagne
@@ -65,8 +63,6 @@ public class MoveMethod {
 
             // Mise à jour des coordonnées du soldat
             soldat.actionDeplacement(grille, xDest, yDest);
-            // Persiste les modifications
-            grilleDAO.enregistrerGrille(grille);
 
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -76,7 +72,6 @@ public class MoveMethod {
 
     // Méthode utilitaire pour vérifier les limites de la grille
     private static boolean isValidCoordinate(Grille grille, int x, int y) {
-        return x >= 0 && x < grille.getLignes() && y >= 0 && y < grille.getColonnes();
+        return (x >= 0 && x < grille.getLignes() && y >= 0 && y < grille.getColonnes());
     }
-
 }

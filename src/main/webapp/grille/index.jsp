@@ -17,7 +17,18 @@
     </style>
 </head>
 <body>
+
 <h1>Grille de jeu</h1>
+
+<!-- Section d'informations sur le joueur -->
+<div style="margin-bottom: 20px;">
+    <h3>Informations du joueur</h3>
+    <p>Nom : <strong>${joueur.nom}</strong></p>
+    <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
+    <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
+</div>
+
+<!-- Affichage de la grille si elle a des dimensions valides -->
 <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
     <table>
         <c:forEach var="i" begin="0" end="${grille.lignes - 1}">
@@ -54,12 +65,15 @@
                                     </form>
                                 </c:if>
                             </c:when>
+
                             <c:when test="${tuile.getType() == 'VILLE'}">
                                 <img src="imagesTuiles/chateau.jpg" alt="Ville" width="80" height="80">
                             </c:when>
+
                             <c:when test="${tuile.getType() == 'MONTAGNE'}">
                                 <img src="imagesTuiles/montagne.jpg" alt="Montagne" width="80" height="80">
                             </c:when>
+
                             <c:otherwise>
                                 <img src="imagesTuiles/vide.jpg" alt="Vide" width="80" height="80">
                             </c:otherwise>
@@ -70,9 +84,14 @@
         </c:forEach>
     </table>
 </c:if>
+
+<!-- Message si la grille a des dimensions invalides -->
 <c:if test="${grille.lignes <= 0 || grille.colonnes <= 0}">
     <p>Invalid grid dimensions.</p>
 </c:if>
+
+<!-- Lien de déconnexion -->
 <a href="${pageContext.request.contextPath}/logout">Déconnexion</a> <br>
+
 </body>
 </html>

@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-public class SoldatDAO {
+public class SoldatDAO implements AutoCloseable {
     @PersistenceContext
     private EntityManagerFactory emf;
 
@@ -55,5 +55,10 @@ public class SoldatDAO {
         try (EntityManager em = emf.createEntityManager()) {
             return em.createQuery("SELECT s FROM Soldat s", Soldat.class).getResultList();
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        emf.close();
     }
 }

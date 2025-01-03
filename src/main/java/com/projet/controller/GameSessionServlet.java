@@ -37,12 +37,17 @@ public class GameSessionServlet extends HttpServlet {
         }
 
         Long grilleId = Long.parseLong(grilleIdParam);
-        Grille grille = grilleService.trouverGrilleParId(grilleId);
 
-        // Set the grid data as a request attribute
-        request.setAttribute("grille", grille);
-        request.setAttribute("action", "afficherGrille");
-        // Forward the request to the JSP page
-        request.getRequestDispatcher("/FrontController").forward(request, response);
+        try (GrilleDAO grilleService = new GrilleDAO()) {
+            Grille grille = grilleService.trouverGrilleParId(grilleId);
+
+            // Set the grid data as a request attribute
+            request.setAttribute("grille", grille);
+            request.setAttribute("action", "afficherGrille");
+            // Forward the request to the JSP page
+            request.getRequestDispatcher("/FrontController").forward(request, response);
+        } catch (Exception e) {
+            throw new ServletException("Erreur lors de la récupération de la grille", e);
+        }
     }
 }
