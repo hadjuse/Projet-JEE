@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -28,7 +30,7 @@ public class LoginController extends HttpServlet {
         String mdp = request.getParameter("mdp");
         try {
             Joueur joueur = joueurDAO.trouverJoueurParNomEtMdp(nom, Joueur.hashPassword(mdp));
-            HttpSession session = request.getSession();
+            HttpSession session = request.getSession(true); // Crée une nouvelle session si elle n'existe pas
             session.setAttribute("joueur", joueur);
             response.sendRedirect("connected/index.jsp");
         } catch (NoResultException e) {

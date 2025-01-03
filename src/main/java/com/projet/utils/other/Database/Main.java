@@ -14,6 +14,7 @@ public class Main {
             TableResetUtil.resetTable(em, "Soldat");
             TableResetUtil.resetTable(em, "Joueur");
             TableResetUtil.resetTable(em, "Grille");
+            TableResetUtil.resetTable(em, "Foret");
         } finally {
             em.close();
             emf.close();

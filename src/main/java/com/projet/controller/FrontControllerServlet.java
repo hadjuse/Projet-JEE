@@ -19,9 +19,15 @@ public class FrontControllerServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String actionPost = (String) request.getAttribute("action");
-        String actionGet = request.getParameter("action");
-        System.out.printf("Action: %s\n", actionPost);
+        if (actionPost == null) {
+            actionPost = request.getParameter("action");
+        }
+        System.out.println("Action = " + actionPost);
         if("creerGrille".equals(actionPost)){
             actionsController.creerGrille(request,response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
@@ -29,8 +35,8 @@ public class FrontControllerServlet extends HttpServlet {
         } else if("afficherGrille".equals(actionPost)) {
             actionsController.afficherGrille(request, response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
-        } else if("deplacerSoldat".equals(actionGet)) {
-            System.out.printf("Action: %s\n", actionGet);
+        } else if("deplacerSoldat".equals(actionPost)) {
+            System.out.printf("Action: %s\n", actionPost);
             actionsController.deplacerSoldat(request, response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
         } else {

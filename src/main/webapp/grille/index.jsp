@@ -29,7 +29,7 @@
                             <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
                                 <img src="imagesTuiles/chevalier.jpg" alt="Soldat" width="80" height="80">
                                 <c:if test="${tuile.soldat.proprietaire.id == joueur.id}">
-                                    <form action="${pageContext.request.contextPath}/FrontController" method="get">
+                                    <form action="${pageContext.request.contextPath}/FrontController" method="post">
                                         <input type="hidden" name="action" value="deplacerSoldat">
                                         <input type="hidden" name="grilleId" value="${grille.id}">
                                         <input type="hidden" name="xSource" value="${i}">
