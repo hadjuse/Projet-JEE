@@ -44,6 +44,15 @@
 
                             <c:when test="${tuile.getType() == 'FORET'}">
                                 <img src="imagesTuiles/foret.jpg" alt="Forêt" width="80" height="80">
+                                <c:if test="${adjacentToSoldat[i][j]}">
+                                    <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                        <input type="hidden" name="action" value="collecterRessources">
+                                        <input type="hidden" name="grilleId" value="${grille.id}">
+                                        <input type="hidden" name="xSource" value="${i}">
+                                        <input type="hidden" name="ySource" value="${j}">
+                                        <button type="submit">Collecter Ressources</button>
+                                    </form>
+                                </c:if>
                             </c:when>
                             <c:when test="${tuile.getType() == 'VILLE'}">
                                 <img src="imagesTuiles/chateau.jpg" alt="Ville" width="80" height="80">

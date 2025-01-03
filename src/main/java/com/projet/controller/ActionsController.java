@@ -79,6 +79,7 @@ public class ActionsController {
         String direction = request.getParameter("direction");
         System.out.printf("Grille ID: %s, xSource: %d, ySource: %d, direction: %s\n", grilleId, xSource, ySource, direction);
         Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
+        Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
         ButtonStrategy strategy;
 
         switch (direction) {
@@ -100,7 +101,15 @@ public class ActionsController {
         }
         System.out.printf("Grille ID: %s, xSource: %d, ySource: %d, direction: %s\n", grilleId, xSource, ySource, direction);
         strategy.action(grille, xSource, ySource);
+        boolean[][] adjacentToSoldat = new boolean[grille.getLignes()][grille.getColonnes()];
+        for (int i = 0; i < grille.getLignes(); i++) {
+            for (int j = 0; j < grille.getColonnes(); j++) {
+                adjacentToSoldat[i][j] = grille.isAdjacentToType(i, j, "SOLDATOCCUPE");
+            }
+        }
+
         request.setAttribute("grille", grille);
+        request.setAttribute("adjacentToSoldat", adjacentToSoldat);
         //forwardToFrontController(request, response, "deplacerSoldat");
     }
 
