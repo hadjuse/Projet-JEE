@@ -4,7 +4,7 @@ import com.projet.model.Joueur;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
-public class JoueurDAO {
+public class JoueurDAO implements AutoCloseable {
     @PersistenceContext
     private EntityManagerFactory emf;
 
@@ -64,5 +64,18 @@ public class JoueurDAO {
             }
             em.getTransaction().commit();
         }
+    }
+    @Transactional
+    public Joueur trouverJoueurParNom(String nom) {
+        try (EntityManager em = emf.createEntityManager()) {
+         return em.createQuery("SELECT j FROM Joueur j WHERE j.nom = :nom", Joueur.class)
+                    .setParameter("nom", nom)
+                    .getSingleResult();
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        emf.close();
     }
 }

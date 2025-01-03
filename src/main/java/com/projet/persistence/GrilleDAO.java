@@ -1,6 +1,7 @@
 package com.projet.persistence;
 
 import com.projet.model.Grille;
+import com.projet.model.Tuile;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -9,7 +10,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-public class GrilleDAO {
+public class GrilleDAO implements AutoCloseable {
     @PersistenceContext
     private EntityManagerFactory emf;
 
@@ -57,5 +58,19 @@ public class GrilleDAO {
 
     public EntityManagerFactory getEmf() {
         return emf;
+    }
+
+    @Transactional
+    public Tuile trouverTuileParCoord(EntityManager em, Long grilleId, int xDest, int yDest) {
+        return em.createQuery("SELECT t FROM Tuile t WHERE t.grille.id = :grilleId AND t.x = :xDest AND t.y = :yDest", Tuile.class)
+                .setParameter("grilleId", grilleId)
+                .setParameter("xDest", xDest)
+                .setParameter("yDest", yDest)
+                .getSingleResult();
+    }
+
+    @Override
+    public void close() throws Exception {
+        emf.close();
     }
 }
