@@ -4,24 +4,14 @@
 <html>
 <head>
     <title>Grille</title>
-    <style>
-        table {
-            border-collapse: collapse;
-        }
-        td {
-            width: 100px;
-            height: 100px;
-            border: 1px solid black;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/grille.css">
 </head>
 <body>
 
 <h1>Grille de jeu</h1>
 
 <!-- Section d'informations sur le joueur -->
-<div style="margin-bottom: 20px;">
+<div class="player-info">
     <h3>Informations du joueur</h3>
     <p>Nom : <strong>${joueur.nom}</strong></p>
     <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
@@ -30,6 +20,7 @@
 
 <!-- Affichage de la grille si elle a des dimensions valides -->
 <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
+<div class="table-container">
     <table>
         <c:forEach var="i" begin="0" end="${grille.lignes - 1}">
             <tr>
@@ -38,7 +29,7 @@
                         <c:set var="tuile" value="${grille.getTuile(i,j)}"/>
                         <c:choose>
                             <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
-                                <img src="imagesTuiles/chevalier.jpg" alt="Soldat" width="80" height="80">
+                                <img src="icons/Large/soldier.png" alt="Soldat" width="80" height="80">
                                 <c:if test="${tuile.soldat.proprietaire.id == joueur.id}">
                                     <form action="${pageContext.request.contextPath}/FrontController" method="post">
                                         <input type="hidden" name="action" value="deplacerSoldat">
@@ -54,7 +45,7 @@
                             </c:when>
 
                             <c:when test="${tuile.getType() == 'FORET'}">
-                                <img src="imagesTuiles/foret.jpg" alt="Forêt" width="80" height="80">
+                                <img src="icons/Large/forest.png" alt="Forêt" width="80" height="80">
                                 <c:if test="${adjacentToSoldat[i][j]}">
                                     <form action="${pageContext.request.contextPath}/FrontController" method="post">
                                         <input type="hidden" name="action" value="collecterRessources">
@@ -67,15 +58,15 @@
                             </c:when>
 
                             <c:when test="${tuile.getType() == 'VILLE'}">
-                                <img src="imagesTuiles/chateau.jpg" alt="Ville" width="80" height="80">
+                                <img src="icons/Large/city.png" alt="Ville" width="80" height="80">
                             </c:when>
 
                             <c:when test="${tuile.getType() == 'MONTAGNE'}">
-                                <img src="imagesTuiles/montagne.jpg" alt="Montagne" width="80" height="80">
+                                <img src="icons/Large/montain.png" alt="Montagne" width="80" height="80">
                             </c:when>
 
                             <c:otherwise>
-                                <img src="imagesTuiles/vide.jpg" alt="Vide" width="80" height="80">
+                                <img src="icons/Large/empty.png" alt="Vide" width="80" height="80">
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -83,6 +74,7 @@
             </tr>
         </c:forEach>
     </table>
+</div>
 </c:if>
 
 <!-- Message si la grille a des dimensions invalides -->
@@ -91,7 +83,9 @@
 </c:if>
 
 <!-- Lien de déconnexion -->
-<a href="${pageContext.request.contextPath}/logout">Déconnexion</a> <br>
+<div class="logout-link">
+    <a href="${pageContext.request.contextPath}/logout">Déconnexion</a> <br>
+</div>
 
 </body>
 </html>
