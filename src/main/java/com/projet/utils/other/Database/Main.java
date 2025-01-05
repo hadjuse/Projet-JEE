@@ -12,9 +12,9 @@ public class Main {
         try {
             TableResetUtil.resetTable(em, "Tuile");
             TableResetUtil.resetTable(em, "Soldat");
-            TableResetUtil.resetTable(em, "Joueur");
             TableResetUtil.resetTable(em, "Grille");
             TableResetUtil.resetTable(em, "Foret");
+            //TableResetUtil.resetTable(em, "Joueur");
         } finally {
             em.close();
             emf.close();

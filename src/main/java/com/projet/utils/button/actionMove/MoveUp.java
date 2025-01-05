@@ -27,7 +27,7 @@ public class MoveUp implements ButtonStrategy {
     }
 
     private void moveSoldier(Grille grille, int xSource, int ySource, int xDest, int yDest) {
-        MoveMethod.MoveMethod(grille, xSource, ySource, xDest, yDest, grilleDAO);
+        MoveMethod.move(grille, xSource, ySource, xDest, yDest, grilleDAO);
     }
 
     public GrilleDAO getGrilleDAO() {
