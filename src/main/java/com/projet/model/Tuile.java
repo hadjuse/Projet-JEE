@@ -3,6 +3,9 @@ package com.projet.model;
 import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type_tuile", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("Tuile")
 public class Tuile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

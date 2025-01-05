@@ -11,6 +11,11 @@ import jakarta.persistence.EntityManager;
 public class MoveMethod {
 
     public static void move(Grille grille, int xSource, int ySource, int xDest, int yDest, GrilleDAO grilleDAO) {
+        if (grille == null) {
+            System.out.println("Déplacement impossible : la grille est nulle.");
+            return;
+        }
+
         // Validation des limites de la grille
         if (!isValidCoordinate(grille, xSource, ySource) || !isValidCoordinate(grille, xDest, yDest)) {
             System.out.println("Déplacement impossible : coordonnées hors limites.");
@@ -36,22 +41,11 @@ public class MoveMethod {
                 em.getTransaction().rollback();
                 return;
             }
-            if (destination.getType() == TypeTuile.VILLE) {
-                System.out.println("Collision avec la ville détectée.");
-                // Logique de gestion de la collision avec la ville
-                // Par exemple, attaquer la ville ou interagir avec elle
-                em.getTransaction().rollback();
-                return;
-            }
-
-            // Mettre à jour la tuile source et destination
             Tuile destination = grille.getTuile(xDest, yDest);
             destination.setSoldat(soldat);
             source.setSoldat(null);
-
             tuileDAO.mettreAJourTuile(source);
             tuileDAO.mettreAJourTuile(destination);
-
             grilleDAO.enregistrerGrille(grille);
             em.getTransaction().commit();
         } catch (Exception e) {
