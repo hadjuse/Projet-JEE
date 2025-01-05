@@ -1,7 +1,10 @@
 package com.projet.controller;
 
+import com.projet.model.Foret;
 import com.projet.model.Grille;
 import com.projet.model.Joueur;
+import com.projet.persistence.DAOFactory;
+import com.projet.persistence.ForetDAO;
 import com.projet.persistence.GrilleDAO;
 import com.projet.persistence.JoueurDAO;
 import com.projet.utils.button.ButtonStrategy;
@@ -15,15 +18,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.DataInput;
 import java.io.IOException;
 
 public class ActionsController {
     private GrilleDAO grilleDAO;
     private JoueurDAO joueurDAO;
 
+
     public ActionsController() {
         setGrilleDAO(new GrilleDAO());
         setJoueurDAO(new JoueurDAO());
+
     }
 
     public void creerGrille(HttpServletRequest request, HttpServletResponse response) {
@@ -162,19 +168,38 @@ public class ActionsController {
     }
 
     public void collecterResources(HttpServletRequest request, HttpServletResponse response) {
-        String grilleId = request.getParameter("grilleId");
-        int xSource = Integer.parseInt(request.getParameter("xSource"));
-        int ySource = Integer.parseInt(request.getParameter("ySource"));
-        try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO()) {
-            Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
-            Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
-            joueur.ajouterPointsProduction(grille.getTuile(xSource, ySource).getForet().getRessourcesProduction());
-            System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
-            joueurDAO.mettreAJourJoueur(joueur);
-            request.setAttribute("grille", grille);
-            request.setAttribute("joueur", joueur);
+        try {
+            String grilleId = getParameter(request, "grilleId");
+            int xSource = Integer.parseInt(getParameter(request, "xSource"));
+            int ySource = Integer.parseInt(getParameter(request, "ySource"));
+
+            try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); ForetDAO foretDAO = DAOFactory.getForetDAO()) {
+                Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
+                Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+
+                collecterRessourcesDeLaForet(grille, xSource, ySource, joueur, foretDAO);
+
+                joueurDAO.mettreAJourJoueur(joueur);
+                request.setAttribute("grille", grille);
+                request.setAttribute("joueur", joueur);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getParameter(HttpServletRequest request, String paramName) {
+        return request.getParameter(paramName);
+    }
+
+    private void collecterRessourcesDeLaForet(Grille grille, int xSource, int ySource, Joueur joueur, ForetDAO foretDAO) {
+        Foret foret = grille.getTuile(xSource, ySource).getForet();
+        int ptGagner = foret.fourrager();
+        joueur.ajouterPointsProduction(ptGagner);
+
+        // Mettre à jour la forêt dans la base de données
+        foretDAO.mettreAJourForet(foret);
+
+        System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
     }
 }
