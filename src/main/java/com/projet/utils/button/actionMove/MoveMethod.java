@@ -36,6 +36,13 @@ public class MoveMethod {
                 em.getTransaction().rollback();
                 return;
             }
+            if (destination.getType() == TypeTuile.VILLE) {
+                System.out.println("Collision avec la ville détectée.");
+                // Logique de gestion de la collision avec la ville
+                // Par exemple, attaquer la ville ou interagir avec elle
+                em.getTransaction().rollback();
+                return;
+            }
 
             // Mettre à jour la tuile source et destination
             Tuile destination = grille.getTuile(xDest, yDest);

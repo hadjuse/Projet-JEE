@@ -43,7 +43,10 @@ public class FrontControllerServlet extends HttpServlet {
             System.out.printf("Action: %s\n", actionPost);
             actionsController.collecterResources(request, response);
             request.getRequestDispatcher("grille/index.jsp").forward(request, response);
-
+        } else if("occuperVille".equals(actionPost)) {
+            System.out.printf("Action: %s\n", actionPost);
+            actionsController.occuperVille(request, response);
+            request.getRequestDispatcher("grille/index.jsp").forward(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action non définie");
         }

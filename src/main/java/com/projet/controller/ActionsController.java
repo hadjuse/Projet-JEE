@@ -3,10 +3,13 @@ package com.projet.controller;
 import com.projet.model.Foret;
 import com.projet.model.Grille;
 import com.projet.model.Joueur;
+import com.projet.model.Soldat;
+import com.projet.model.Ville;
 import com.projet.persistence.DAOFactory;
 import com.projet.persistence.ForetDAO;
 import com.projet.persistence.GrilleDAO;
 import com.projet.persistence.JoueurDAO;
+import com.projet.persistence.VilleDAO;
 import com.projet.utils.button.ButtonStrategy;
 import com.projet.utils.button.actionMove.MoveDown;
 import com.projet.utils.button.actionMove.MoveLeft;
@@ -24,12 +27,13 @@ import java.io.IOException;
 public class ActionsController {
     private GrilleDAO grilleDAO;
     private JoueurDAO joueurDAO;
+    private VilleDAO villeDAO;
 
 
     public ActionsController() {
         setGrilleDAO(new GrilleDAO());
         setJoueurDAO(new JoueurDAO());
-
+        setVilleDao(new VilleDAO());
     }
 
     public void creerGrille(HttpServletRequest request, HttpServletResponse response) {
@@ -38,7 +42,12 @@ public class ActionsController {
         HttpSession session = request.getSession(false);
         Grille grille = new Grille(lignes, colonnes);
         Joueur joueur = (Joueur) session.getAttribute("joueur");
-
+      
+        try (JoueurDAO joueurDAO = new JoueurDAO()) {
+            Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Sauvegarder le joueur actuel s'il n'est pas déjà sauvegardé
         if (joueur.getId() == null) {
             try (JoueurDAO joueurDAO = new JoueurDAO()) {
@@ -48,25 +57,41 @@ public class ActionsController {
             }
         }
 
+        joueur.setNbVilles(0);
+        joueur.setNbSoldats(0);
+        System.out.println("Nombre de soldats initialisé: " + joueur.getNbSoldats());
+        System.out.println("Nombre de villes initialisé: " + joueur.getNbVilles());
+        System.out.println("Score actuel: " + joueur.getScore());
+
         // Ajouter le premier soldat avec le joueur actuel comme propriétaire
-        grille.ajouterSoldat(0, 0, joueur);
-        // Récupérer un autre joueur existant
-        try (JoueurDAO joueurDAO = new JoueurDAO()) {
-            Joueur autreJoueur = joueurDAO.trouverJoueurParNom("hadjuse3");
-            grille.ajouterSoldat(7, 7, autreJoueur);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        grille.ajouterSoldat(0, 1, joueur);
+        System.out.println("Soldat ajouté, nombre de soldats: " + joueur.getNbSoldats());
+        System.out.println("Score actuel: " + joueur.getScore());
+
 
         // ajout d'une foret
         grille.ajouterForet(1, 3, 3);
+
+        // ajout d'une ville
+        grille.ajouterVille(0, 0, joueur); // Ville du joueur 1
+        grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
+
         // Sauvegarder la grille
+
+        // Initialisation du score du joueur
+        joueur.updateScore();
+
+        // Envoi des attributs à la vue
+        request.setAttribute("joueur", joueur);
         try (GrilleDAO grilleDAO = new GrilleDAO()) {
             grilleDAO.creerGrille(grille);
         } catch (Exception e) {
             e.printStackTrace();
         }
         request.setAttribute("grille", grille);
+
+        // Mise à jour du joueur
+        joueurDAO.mettreAJourJoueur(joueur);
 
         // Log pour vérifier que la grille a été créée
         System.out.println("Grille créée avec succès : " + grille);
@@ -157,6 +182,14 @@ public class ActionsController {
         return joueurDAO;
     }
 
+    private void setVilleDao(VilleDAO villeDAO) {
+        this.villeDAO = villeDAO;
+    }
+
+    public VilleDAO getVilleDAO() {
+        return villeDAO;
+    }
+
     private void forwardToFrontController(HttpServletRequest request, HttpServletResponse response, String action) throws IOException {
         request.setAttribute("action", action);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/FrontController");
@@ -201,5 +234,31 @@ public class ActionsController {
         foretDAO.mettreAJourForet(foret);
 
         System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
+    }
+
+    public void occuperVille(HttpServletRequest request, HttpServletResponse response) {
+        // Récupération des paramètres de la requête
+        String grilleId = request.getParameter("grilleId");
+        int xSource = Integer.parseInt(request.getParameter("xSource"));
+        int ySource = Integer.parseInt(request.getParameter("ySource"));
+        Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
+        Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+        Ville ville = grille.getTuile(xSource, ySource).getVille();
+        System.out.println("Ville occupée avec succès");
+        // Attaque de la ville
+        ville.subirAttaque(3); // Attaque de la ville par le soldat factice
+        if (ville.getPointsDefense() <= 0) {
+            // TD enlever la propriété a l'autre joueur
+            ville.setProprietaire(joueur); // La ville est conquise
+            joueur.addNbVilles(1); // Ajout d'une ville au joueur
+            System.out.println("Ville capturée avec succès ");
+            ville.setPointsDefense(12); // Réinitialisation des points de défense
+            joueur.updateScore();
+        }
+        System.out.println("Ville attaquée avec succès il reste: "+ville.getPointsDefense());
+        joueurDAO.mettreAJourJoueur(joueur);
+        villeDAO.mettreAJourVille(ville);
+        request.setAttribute("grille", grille);
+        request.setAttribute("joueur", joueur);
     }
 }
