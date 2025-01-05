@@ -11,6 +11,10 @@ public class DAOFactory {
         EntityManager em = emf.createEntityManager();
         return new TuileDAO(em);
     }
+    public static ForetDAO getForetDAO() {
+        EntityManager em = emf.createEntityManager();
+        return new ForetDAO(em);
+    }
 
     public static EntityManagerFactory getEmf() {
         return emf;
