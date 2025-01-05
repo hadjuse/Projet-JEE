@@ -1,0 +1,131 @@
+/* General styles */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+    background-color: #f4f4f9; /* Light background for better aesthetics */
+    color: #333;
+}
+
+h1 {
+    margin-top: 20px;
+    color: #2c3e50;
+}
+
+/* Player Info Box */
+.player-info {
+    align-self: flex-start;
+    margin: 100px 0 0 200px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.player-info h3 {
+    margin-top: 0;
+    color: #34495e;
+}
+
+.player-info p {
+    margin: 5px 0;
+}
+
+/* Grid Table */
+.table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -100px;
+}
+
+table {
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden; /* Ensure border-radius applies to all edges */
+}
+
+td {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle; /* Center content vertically */
+    position: relative;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+td:hover {
+    transform: scale(1.05);
+    background-color: #f0f8ff; /* Light blue hover effect */
+}
+
+img {
+    width: 80px;
+    height: 80px;
+}
+
+/* Buttons */
+button {
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+}
+
+button:active {
+    transform: translateY(0);
+    background-color: #1e6f96;
+}
+
+.button-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two buttons per row */
+    gap: 4px; /* Spacing between buttons */
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the buttons in the cell */
+}
+
+/* Logout Link */
+.logout-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.logout-link a {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logout-link a:hover {
+    background-color: #c0392b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

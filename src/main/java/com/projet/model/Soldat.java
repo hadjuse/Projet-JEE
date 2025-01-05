@@ -188,4 +188,27 @@ public class Soldat{
     public Long getId() {
         return id;
     }
+    public boolean deplacer(Grille grille, int xDest, int yDest) {
+        Tuile destination = grille.getTuile(xDest, yDest);
+
+        // Gérer la collision avec la forêt ou la montagne
+        if (destination.getType() == TypeTuile.FORET || destination.getType() == TypeTuile.MONTAGNE) {
+            System.out.println("Collision détectée avec " + destination.getType());
+            return false;
+        }
+
+        // Mise à jour des relations
+        Tuile source = grille.getTuile(this.x, this.y);
+        source.setSoldat(null);
+        source.setType(TypeTuile.VIDE);
+
+        destination.setSoldat(this);
+        destination.setType(TypeTuile.SOLDATOCCUPE);
+
+        // Mise à jour des coordonnées du soldat
+        this.x = xDest;
+        this.y = yDest;
+
+        return true;
+    }
 }

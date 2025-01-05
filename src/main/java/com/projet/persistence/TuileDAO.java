@@ -1,24 +1,24 @@
 package com.projet.persistence;
 
-import com.projet.model.Foret;
+import com.projet.model.Tuile;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-public class ForetDAO implements AutoCloseable {
+public class TuileDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public ForetDAO(EntityManager entityManager) {
+    public TuileDAO(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Transactional
-    public void creerForet(Foret foret) {
+    public void creerTuile(Tuile tuile) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.persist(foret);
+            entityManager.persist(tuile);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
@@ -29,15 +29,15 @@ public class ForetDAO implements AutoCloseable {
     }
 
     @Transactional
-    public Foret trouverForetParId(Long id) {
-        return entityManager.find(Foret.class, id);
+    public Tuile trouverTuileParId(Long id) {
+        return entityManager.find(Tuile.class, id);
     }
 
     @Transactional
-    public void mettreAJourForet(Foret foret) {
+    public void mettreAJourTuile(Tuile tuile) {
         try {
             entityManager.getTransaction().begin();
-            entityManager.merge(foret);
+            entityManager.merge(tuile);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
@@ -48,12 +48,12 @@ public class ForetDAO implements AutoCloseable {
     }
 
     @Transactional
-    public void supprimerForet(Long id) {
+    public void supprimerTuile(Long id) {
         try {
             entityManager.getTransaction().begin();
-            Foret foret = entityManager.find(Foret.class, id);
-            if (foret != null) {
-                entityManager.remove(foret);
+            Tuile tuile = entityManager.find(Tuile.class, id);
+            if (tuile != null) {
+                entityManager.remove(tuile);
             }
             entityManager.getTransaction().commit();
         } catch (Exception e) {
@@ -62,10 +62,5 @@ public class ForetDAO implements AutoCloseable {
             }
             throw e;
         }
-    }
-
-    @Override
-    public void close() throws Exception {
-        entityManager.close();
     }
 }

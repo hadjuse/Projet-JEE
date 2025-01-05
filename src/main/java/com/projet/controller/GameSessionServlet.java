@@ -14,11 +14,7 @@ import java.io.IOException;
 @WebServlet("/gameSession")
 public class GameSessionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private GrilleDAO grilleService;
 
-    public GameSessionServlet() {
-        this.grilleService = new GrilleDAO();
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
