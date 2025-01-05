@@ -5,11 +5,7 @@ import com.projet.model.Grille;
 import com.projet.model.Joueur;
 import com.projet.model.Soldat;
 import com.projet.model.Ville;
-import com.projet.persistence.DAOFactory;
-import com.projet.persistence.ForetDAO;
-import com.projet.persistence.GrilleDAO;
-import com.projet.persistence.JoueurDAO;
-import com.projet.persistence.VilleDAO;
+import com.projet.persistence.*;
 import com.projet.utils.button.ButtonStrategy;
 import com.projet.utils.button.actionMove.MoveDown;
 import com.projet.utils.button.actionMove.MoveLeft;
@@ -21,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import java.io.DataInput;
 import java.io.IOException;
 
 public class ActionsController {
@@ -29,11 +24,10 @@ public class ActionsController {
     private JoueurDAO joueurDAO;
     private VilleDAO villeDAO;
 
-
     public ActionsController() {
         setGrilleDAO(new GrilleDAO());
         setJoueurDAO(new JoueurDAO());
-        setVilleDao(new VilleDAO());
+        setVilleDAO(new VilleDAO());
     }
 
     public void creerGrille(HttpServletRequest request, HttpServletResponse response) {
@@ -42,12 +36,8 @@ public class ActionsController {
         HttpSession session = request.getSession(false);
         Grille grille = new Grille(lignes, colonnes);
         Joueur joueur = (Joueur) session.getAttribute("joueur");
-      
-        try (JoueurDAO joueurDAO = new JoueurDAO()) {
-            Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+
         // Sauvegarder le joueur actuel s'il n'est pas déjà sauvegardé
         if (joueur.getId() == null) {
             try (JoueurDAO joueurDAO = new JoueurDAO()) {
@@ -68,13 +58,17 @@ public class ActionsController {
         System.out.println("Soldat ajouté, nombre de soldats: " + joueur.getNbSoldats());
         System.out.println("Score actuel: " + joueur.getScore());
 
-
         // ajout d'une foret
         grille.ajouterForet(1, 3, 3);
 
         // ajout d'une ville
+        try (JoueurDAO joueurDAO = new JoueurDAO()) {
+            Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
+            grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         grille.ajouterVille(0, 0, joueur); // Ville du joueur 1
-        grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
 
         // Sauvegarder la grille
 
@@ -92,7 +86,7 @@ public class ActionsController {
 
         // Mise à jour du joueur
         joueurDAO.mettreAJourJoueur(joueur);
-
+        //grilleDAO.enregistrerGrille(grille);
         // Log pour vérifier que la grille a été créée
         System.out.println("Grille créée avec succès : " + grille);
     }
@@ -165,41 +159,6 @@ public class ActionsController {
         }
     }
 
-
-    public void setGrilleDAO(GrilleDAO grilleDAO) {
-        this.grilleDAO = grilleDAO;
-    }
-
-    public GrilleDAO getGrilleDAO() {
-        return grilleDAO;
-    }
-
-    public void setJoueurDAO(JoueurDAO joueurDAO) {
-        this.joueurDAO = joueurDAO;
-    }
-
-    public JoueurDAO getJoueurDAO() {
-        return joueurDAO;
-    }
-
-    private void setVilleDao(VilleDAO villeDAO) {
-        this.villeDAO = villeDAO;
-    }
-
-    public VilleDAO getVilleDAO() {
-        return villeDAO;
-    }
-
-    private void forwardToFrontController(HttpServletRequest request, HttpServletResponse response, String action) throws IOException {
-        request.setAttribute("action", action);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/FrontController");
-        try {
-            dispatcher.forward(request, response);
-        } catch (Exception e) {
-            throw new IOException("Erreur lors de la redirection vers FrontController", e);
-        }
-    }
-
     public void collecterResources(HttpServletRequest request, HttpServletResponse response) {
         try {
             String grilleId = getParameter(request, "grilleId");
@@ -221,19 +180,31 @@ public class ActionsController {
         }
     }
 
-    private String getParameter(HttpServletRequest request, String paramName) {
-        return request.getParameter(paramName);
-    }
+    public void guerirSoldat(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Long soldatId = Long.parseLong(request.getParameter("soldatId"));
+            Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
 
-    private void collecterRessourcesDeLaForet(Grille grille, int xSource, int ySource, Joueur joueur, ForetDAO foretDAO) {
-        Foret foret = grille.getTuile(xSource, ySource).getForet();
-        int ptGagner = foret.fourrager();
-        joueur.ajouterPointsProduction(ptGagner);
+            for (Soldat soldat : joueur.getSoldats()) {
+                if (soldat.getId().equals(soldatId)) {
+                    soldat.soigner();
+                    break;
+                }
+            }
 
-        // Mettre à jour la forêt dans la base de données
-        foretDAO.mettreAJourForet(foret);
+            try(SoldatDAO soldatDAO = new SoldatDAO()) {
+                Soldat soldat = soldatDAO.trouverSoldatParId(soldatId);
+                soldatDAO.mettreAJourSoldat(soldat);
+            }
 
-        System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
+            try (JoueurDAO joueurDAO = new JoueurDAO()) {
+                joueurDAO.mettreAJourJoueur(joueur);
+            }
+
+            request.setAttribute("joueur", joueur);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void occuperVille(HttpServletRequest request, HttpServletResponse response) {
@@ -260,5 +231,52 @@ public class ActionsController {
         villeDAO.mettreAJourVille(ville);
         request.setAttribute("grille", grille);
         request.setAttribute("joueur", joueur);
+    }
+
+    public void setGrilleDAO(GrilleDAO grilleDAO) {
+        this.grilleDAO = grilleDAO;
+    }
+
+    public GrilleDAO getGrilleDAO() {
+        return grilleDAO;
+    }
+
+    public void setJoueurDAO(JoueurDAO joueurDAO) {
+        this.joueurDAO = joueurDAO;
+    }
+
+    public JoueurDAO getJoueurDAO() {
+        return joueurDAO;
+    }
+
+    public void setVilleDAO(VilleDAO villeDAO) {
+        this.villeDAO = villeDAO;
+    }
+
+    public VilleDAO getVilleDAO() {
+        return villeDAO;
+    }
+
+    private void forwardToFrontController(HttpServletRequest request, HttpServletResponse response, String action) throws IOException {
+        request.setAttribute("action", action);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/FrontController");
+        try {
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            throw new IOException("Erreur lors de la redirection vers FrontController", e);
+        }
+    }
+    private String getParameter(HttpServletRequest request, String paramName) {
+        return request.getParameter(paramName);
+    }
+    private void collecterRessourcesDeLaForet(Grille grille, int xSource, int ySource, Joueur joueur, ForetDAO foretDAO) {
+        Foret foret = grille.getTuile(xSource, ySource).getForet();
+        int ptGagner = foret.fourrager();
+        joueur.ajouterPointsProduction(ptGagner);
+
+        // Mettre à jour la forêt dans la base de données
+        foretDAO.mettreAJourForet(foret);
+
+        System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
     }
 }

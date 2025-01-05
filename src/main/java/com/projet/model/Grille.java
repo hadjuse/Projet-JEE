@@ -64,6 +64,9 @@ public class Grille {
             Soldat soldat = new Soldat(x, y, 10, joueur); // Exemple de coût de production
             tuile.setSoldat(soldat);
             tuile.setType(TypeTuile.SOLDATOCCUPE);
+
+            tuile.getSoldat().setProprietaire(joueur);
+            joueur.getSoldats().add(soldat);
         }
     }
 

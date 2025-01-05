@@ -2,6 +2,8 @@ package com.projet.model;
 import jakarta.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Joueur {
@@ -57,7 +59,13 @@ public class Joueur {
             throw new RuntimeException(e);
         }
     }
+    @Transient
+    private List<Soldat> soldats=new ArrayList<>();
+    // autres champs et méthodes
 
+    public List<Soldat> getSoldats() {
+        return soldats;
+    }
     public int getPointsProduction() {
         return pointProduction;
     }
