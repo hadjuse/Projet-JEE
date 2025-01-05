@@ -24,6 +24,7 @@
 <div style="margin-bottom: 20px;">
     <h3>Informations du joueur</h3>
     <p>Nom : <strong>${joueur.nom}</strong></p>
+    <p>Score <strong>${joueur.score}</strong></p>
     <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
     <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
 </div>
@@ -68,6 +69,16 @@
 
                             <c:when test="${tuile.getType() == 'VILLE'}">
                                 <img src="imagesTuiles/chateau.jpg" alt="Ville" width="80" height="80">
+                                <%--On teste si la ville est adjacente à un soldat et si elle n'appartient pas au joueur--%>
+                                <c:if test="${adjacentToSoldat[i][j] && tuile.ville.proprietaire.id != joueur.id}">
+                                    <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                        <input type="hidden" name="action" value="occuperVille">
+                                        <input type="hidden" name="grilleId" value="${grille.id}">
+                                        <input type="hidden" name="xSource" value="${i}">
+                                        <input type="hidden" name="ySource" value="${j}">
+                                        <button type="submit">Occuper la ville</button>
+                                    </form>
+                                </c:if>
                             </c:when>
 
                             <c:when test="${tuile.getType() == 'MONTAGNE'}">
