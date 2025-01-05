@@ -87,5 +87,23 @@
     <a href="${pageContext.request.contextPath}/logout">Déconnexion</a> <br>
 </div>
 
+<div class="turn-button">
+    <button onclick="passTurn()">Passer le tour</button>
+</div>
+<script>
+    function passTurn(){
+        fetch(`${pageContext.request.contextPath}/passTurn`, {
+            method: 'POST'
+        })
+            .then(response=>response.json())
+            .then(data=>{
+                if(data.success){
+                    alert('Tour passé au joueur suivant');
+                }else{
+                    alert('Erreur lors du passage du tour');
+                }
+            });
+    }
+</script>
 </body>
 </html>
