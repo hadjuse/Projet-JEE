@@ -109,49 +109,12 @@ public class Soldat{
     }
 
     public boolean subirAttaque(int pointsAttaque) {
-        pointsDefense -= pointsAttaque;
-        if (pointsDefense <= 0) {
-            pointsDefense = 0;
-            return true; // La ville est capturée
+        this.pointsDefense -= pointsAttaque;
+        if (this.pointsDefense <= 0) {
+            this.pointsDefense = 0;
+            return true; // Le soldat est tué
         }
-        return false; // La ville résiste encore
-    }
-    public void actionDeplacement(Grille grille, int x, int y) {
-        Tuile tuile = grille.getTuile(x, y);
-        switch (tuile.getType()) {
-            case VILLE, VILLESOLDAT:
-                if (tuile.getVille().subirAttaque(attaquer())) {
-                    this.setX(x);
-                    this.setY(y);
-                    tuile.setProprietaire(proprietaire);
-                    tuile.setType(TypeTuile.VILLESOLDAT);
-                }
-                this.aJouer = true;
-                break;
-
-            case FORET, VIDE:
-                this.setX(x);
-                this.setY(y);
-                this.setAJouer(true);
-                break;
-
-            case MONTAGNE:
-                System.out.println("Déplacement impossible");
-                break;
-
-            case SOLDATOCCUPE, FORETSOLDAT:
-                if (tuile.getSoldat().subirAttaque(attaquer())) {
-                    this.setX(x);
-                    this.setY(y);
-                    tuile.setProprietaire(proprietaire);
-                }
-                this.aJouer = true;
-                break;
-
-            default:
-                // null
-                break;
-        }
+        return false; // Le soldat résiste encore
     }
 
     public void actionStatique(Grille grille, int x, int y, String action) {
@@ -163,7 +126,7 @@ public class Soldat{
                 break;
 
             case "FORET":
-                if (tuile.getType().equals(TypeTuile.FORETSOLDAT)) {
+                if (tuile.getType().equals(TypeTuile.FORET)) {
                     int ptGagner = tuile.getForet().fourrager();
                     this.aJouer = true;
                     this.getProprietaire().ajouterPointsProduction(ptGagner);
@@ -194,14 +157,14 @@ public class Soldat{
         Tuile source = grille.getTuile(this.x, this.y);
 
         switch (destination.getType()) {
-            case VILLE, VILLESOLDAT:
+            case VILLE:
                 if (destination.getVille().subirAttaque(attaquer())) {
                     // Mise à jour des relations
                     source.setSoldat(null);
                     source.setType(TypeTuile.VIDE);
 
                     destination.setSoldat(this);
-                    destination.setType(TypeTuile.VILLESOLDAT);
+                    destination.setType(TypeTuile.SOLDATOCCUPE);
 
                     // Mise à jour des coordonnées du soldat
                     this.x = xDest;
@@ -236,9 +199,10 @@ public class Soldat{
                 System.out.println("Collision détectée avec " + destination.getType());
                 return false;
 
-            case SOLDATOCCUPE, FORETSOLDAT:
-                if (destination.getSoldat().subirAttaque(attaquer())) {
-
+            case SOLDATOCCUPE:
+                System.out.println(destination.getSoldat().getPointsDefense());
+                if (destination.getSoldat().subirAttaque(2)) {
+                    System.out.println(destination.getSoldat().getPointsDefense());
                     // Mise à jour des relations
                     source.setSoldat(null);
                     source.setType(TypeTuile.VIDE);
