@@ -19,7 +19,7 @@ h1 {
 /* Player Info Box */
 .player-info {
     align-self: flex-start;
-    margin: 100px 0 0 200px;
+    margin: 20px 0 0 20px; /* Ajusté pour réduire l'espace */
     padding: 20px;
     border: 1px solid #ddd;
     background-color: #fff;
@@ -39,9 +39,9 @@ h1 {
 /* Grid Table */
 .table-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: -100px;
+    justify-content: center; /* Centré horizontalement */
+    align-items: flex-start; /* Aligné en haut */
+    margin-top: -500px; /* Ajusté pour aligner avec le titre */
 }
 
 table {
@@ -95,16 +95,17 @@ button:active {
     background-color: #1e6f96;
 }
 
+/* Boutons de déplacement centrés dans la case */
 .button-container {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two buttons per row */
-    gap: 4px; /* Spacing between buttons */
+    grid-template-columns: 1fr 1fr; /* Deux boutons par ligne */
+    gap: 4px; /* Espace entre les boutons */
     justify-content: center;
     align-items: center;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Center the buttons in the cell */
+    transform: translate(-50%, -50%); /* Centre la zone au milieu de la cellule */
 }
 
 /* Logout Link */
@@ -129,7 +130,6 @@ button:active {
     background-color: #c0392b;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-/* grille.css */
 
 /* Section des soldats */
 .soldiers-section {
@@ -137,6 +137,7 @@ button:active {
     padding: 10px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
+    margin-left: -1250px; /* Ajusté pour aligner avec la box d'infos */
 }
 
 .soldiers-section h3 {

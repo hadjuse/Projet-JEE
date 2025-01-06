@@ -11,6 +11,7 @@ import com.projet.utils.button.actionMove.MoveDown;
 import com.projet.utils.button.actionMove.MoveLeft;
 import com.projet.utils.button.actionMove.MoveRight;
 import com.projet.utils.button.actionMove.MoveUp;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,8 +21,11 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class ActionsController {
+    @PersistenceContext
     private GrilleDAO grilleDAO;
+    @PersistenceContext
     private JoueurDAO joueurDAO;
+    @PersistenceContext
     private VilleDAO villeDAO;
 
     public ActionsController() {
@@ -182,7 +186,12 @@ public class ActionsController {
 
     public void guerirSoldat(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Long soldatId = Long.parseLong(request.getParameter("soldatId"));
+            String soldatIdParam = request.getParameter("soldatId");
+            if (soldatIdParam == null || soldatIdParam.isEmpty()) {
+                throw new IllegalArgumentException("Le paramètre soldatId est manquant ou vide.");
+            }
+
+            Long soldatId = Long.parseLong(soldatIdParam);
             Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
 
             for (Soldat soldat : joueur.getSoldats()) {
@@ -192,7 +201,7 @@ public class ActionsController {
                 }
             }
 
-            try(SoldatDAO soldatDAO = new SoldatDAO()) {
+            try (SoldatDAO soldatDAO = new SoldatDAO()) {
                 Soldat soldat = soldatDAO.trouverSoldatParId(soldatId);
                 soldatDAO.mettreAJourSoldat(soldat);
             }
@@ -201,12 +210,18 @@ public class ActionsController {
                 joueurDAO.mettreAJourJoueur(joueur);
             }
 
+            // Récupérer la grille depuis la base de données
+            String grilleId = request.getParameter("grilleId");
+            if (grilleId != null && !grilleId.isEmpty()) {
+                Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
+                request.setAttribute("grille", grille);
+            }
             request.setAttribute("joueur", joueur);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
     public void occuperVille(HttpServletRequest request, HttpServletResponse response) {
         // Récupération des paramètres de la requête
         String grilleId = request.getParameter("grilleId");
