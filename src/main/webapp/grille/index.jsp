@@ -28,6 +28,7 @@
             <p>Points de défense : <strong>${soldat.pointsDefense}</strong></p>
             <p>Blessé : <strong>${soldat.blesse ? 'Oui' : 'Non'}</strong></p>
             <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                <input type="hidden" name="grilleId" value="${grille.id}">
                 <input type="hidden" name="action" value="guerirSoldat">
                 <input type="hidden" name="soldatId" value="${soldat.id}">
                 <button type="submit">Guérir</button>

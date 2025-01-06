@@ -191,8 +191,9 @@ public class Soldat{
     public boolean deplacer(Grille grille, int xDest, int yDest) {
         Tuile destination = grille.getTuile(xDest, yDest);
 
+        Boolean collision = destination.getType() == TypeTuile.FORET || destination.getType() == TypeTuile.MONTAGNE || destination.getType() == TypeTuile.VILLE;
         // Gérer la collision avec la forêt ou la montagne
-        if (destination.getType() == TypeTuile.FORET || destination.getType() == TypeTuile.MONTAGNE) {
+        if (collision) {
             System.out.println("Collision détectée avec " + destination.getType());
             return false;
         }
