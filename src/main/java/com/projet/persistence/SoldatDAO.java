@@ -61,4 +61,12 @@ public class SoldatDAO implements AutoCloseable {
     public void close() throws Exception {
         emf.close();
     }
+    @Transactional
+    public List<Soldat> trouverSoldatsParJoueurId(Long id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT s FROM Soldat s WHERE s.proprietaire.id = :id", Soldat.class)
+                    .setParameter("id", id)
+                    .getResultList();
+        }
+    }
 }

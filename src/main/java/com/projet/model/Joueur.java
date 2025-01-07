@@ -195,4 +195,8 @@ public class Joueur {
     public void retirerPointsProduction(int productionParTour) {
         pointProduction -= productionParTour;
     }
+
+    public void setSoldats(List<Soldat> soldats) {
+        this.soldats = soldats;
+    }
 }

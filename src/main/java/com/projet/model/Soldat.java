@@ -1,5 +1,6 @@
 package com.projet.model;
 
+import com.projet.persistence.SoldatDAO;
 import jakarta.persistence.*;
 
 // TODO instancier soldat quand on creer la map et qu'il soit accessible tout le temps
@@ -16,6 +17,8 @@ public class Soldat{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToOne
+    private Grille grille;
 
     // Constructeurs
     public Soldat(int x, int y, int coutProduction, Joueur proprietaire) {
@@ -153,77 +156,97 @@ public class Soldat{
     }
 
     public boolean deplacer(Grille grille, int xDest, int yDest) {
-        Tuile destination = grille.getTuile(xDest, yDest);
         Tuile source = grille.getTuile(this.x, this.y);
+        Tuile destination = grille.getTuile(xDest, yDest);
 
-        switch (destination.getType()) {
-            case VILLE:
-                if (destination.getVille().subirAttaque(attaquer())) {
-                    // Mise à jour des relations
-                    source.setSoldat(null);
-                    source.setType(TypeTuile.VIDE);
-
-                    destination.setSoldat(this);
-                    destination.setType(TypeTuile.SOLDATOCCUPE);
-
-                    // Mise à jour des coordonnées du soldat
-                    this.x = xDest;
-                    this.y = yDest;
-
-                    // soldat a jouer + a changer de case
-                    this.aJouer = true;
-                    return true;
-                }
-                // soldat a jouer + n'a pas changer de case
-                this.aJouer = true;
-                return false;
-
-            case VIDE:
-
-                // Mise à jour des relations
-                source.setSoldat(null);
-                source.setType(TypeTuile.VIDE);
-
-                destination.setSoldat(this);
-                destination.setType(TypeTuile.SOLDATOCCUPE);
-
-                // Mise à jour des coordonnées du soldat
-                this.x = xDest;
-                this.y = yDest;
-
-                // soldat a jouer + a changer de case
-                this.aJouer = true;
-                return true;
-
-            case FORET, MONTAGNE:
-                System.out.println("Collision détectée avec " + destination.getType());
-                return false;
-
-            case SOLDATOCCUPE:
-                System.out.println(destination.getSoldat().getPointsDefense());
-                if (destination.getSoldat().subirAttaque(2)) {
-                    System.out.println(destination.getSoldat().getPointsDefense());
-                    // Mise à jour des relations
-                    source.setSoldat(null);
-                    source.setType(TypeTuile.VIDE);
-
-                    destination.setSoldat(this);
-                    destination.setType(TypeTuile.SOLDATOCCUPE);
-
-                    // Mise à jour des coordonnées du soldat
-                    this.x = xDest;
-                    this.y = yDest;
-
-                    // soldat a jouer + a changer de case
-                    this.aJouer = true;
-                    return true;
-                }
-                this.aJouer = true;
-                return false;
-
-            default:
-                System.out.println("Collision détectée");
-                return false;
+        try (SoldatDAO soldatDAO = new SoldatDAO()) {
+            switch (destination.getType()) {
+                case VILLE:
+                    return gererDeplacementVille(source, destination, soldatDAO);
+                case VIDE:
+                    return gererDeplacementVide(source, destination, xDest, yDest, soldatDAO);
+                case FORET:
+                case MONTAGNE:
+                    return gererCollision(destination.getType());
+                case SOLDATOCCUPE:
+                    return gererDeplacementSoldatOccupe(source, destination, xDest, yDest, soldatDAO);
+                default:
+                    return gererCollision();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
+    }
+
+    private boolean gererDeplacementVille(Tuile source, Tuile destination, SoldatDAO soldatDAO) throws Exception {
+        /*
+        if (destination.getVille().subirAttaque(attaquer())) {
+            mettreAJourRelations(source, destination);
+            mettreAJourCoordonnees(destination.getX(), destination.getY());
+            mettreAJourSoldat(soldatDAO);
+            return true;
+        }*/
+        mettreAJourSoldat(soldatDAO);
+        return false;
+    }
+
+    private boolean gererDeplacementVide(Tuile source, Tuile destination, int xDest, int yDest, SoldatDAO soldatDAO) throws Exception {
+        mettreAJourRelations(source, destination);
+        mettreAJourCoordonnees(xDest, yDest);
+        mettreAJourSoldat(soldatDAO);
+        return true;
+    }
+
+    private boolean gererCollision(TypeTuile type) {
+        System.out.println("Collision détectée avec " + type);
+        return false;
+    }
+
+    private boolean gererDeplacementSoldatOccupe(Tuile source, Tuile destination, int xDest, int yDest, SoldatDAO soldatDAO) throws Exception {
+        if (destination.getSoldat().subirAttaque(2)) {
+            mettreAJourRelations(source, destination);
+            mettreAJourCoordonnees(xDest, yDest);
+            mettreAJourSoldat(soldatDAO);
+            mettreAJourSoldat(soldatDAO, destination.getSoldat());
+            return true;
+        }
+        mettreAJourSoldat(soldatDAO);
+        mettreAJourSoldat(soldatDAO, destination.getSoldat());
+        return false;
+    }
+
+    private boolean gererCollision() {
+        System.out.println("Collision détectée");
+        return false;
+    }
+
+    private void mettreAJourRelations(Tuile source, Tuile destination) {
+        source.setSoldat(null);
+        source.setType(TypeTuile.VIDE);
+        destination.setSoldat(this);
+        destination.setType(TypeTuile.SOLDATOCCUPE);
+    }
+
+    private void mettreAJourCoordonnees(int xDest, int yDest) {
+        this.x = xDest;
+        this.y = yDest;
+    }
+
+    private void mettreAJourSoldat(SoldatDAO soldatDAO) throws Exception {
+        this.aJouer = true;
+        soldatDAO.mettreAJourSoldat(this);
+    }
+
+    private void mettreAJourSoldat(SoldatDAO soldatDAO, Soldat soldat) throws Exception {
+        soldatDAO.mettreAJourSoldat(soldat);
+    }
+
+    public Grille getGrille() {
+        return grille;
+    }
+
+    public void setGrille(Grille grille) {
+        this.grille = grille;
     }
 }
