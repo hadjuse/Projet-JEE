@@ -10,36 +10,39 @@
 <h1>Grille de jeu</h1>
 
 <!-- Player Information Section -->
-<div class="player-info">
-    <h3>Informations du joueur</h3>
-    <p>Nom : <strong>${joueur.nom}</strong></p>
-    <p>Score : <strong>${joueur.score}</strong></p>
-    <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
-    <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
-</div>
 
-<!-- Soldiers Section -->
-<div class="soldiers-section">
-    <h3>Mes Soldats</h3>
-    <c:forEach var="soldat" items="${joueur.soldats}">
-        <div class="soldier-info">
-            <p>Soldat ID : <strong>${soldat.id}</strong></p>
-            <p>Position : <strong>(${soldat.x}, ${soldat.y})</strong></p>
-            <p>Points de défense : <strong>${soldat.pointsDefense}</strong></p>
-            <p>Blessé : <strong>${soldat.blesse ? 'Oui' : 'Non'}</strong></p>
-            <form action="${pageContext.request.contextPath}/FrontController" method="post">
-                <input type="hidden" name="grilleId" value="${grille.id}">
-                <input type="hidden" name="action" value="guerirSoldat">
-                <input type="hidden" name="soldatId" value="${soldat.id}">
-                <button type="submit">Guérir</button>
-            </form>
-        </div>
-    </c:forEach>
-</div>
 
 <!-- Grid Display -->
 <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
     <div class="table-container">
+
+        <div class="player-info">
+            <h3>Informations du joueur</h3>
+            <p>Nom : <strong>${joueur.nom}</strong></p>
+            <p>Score : <strong>${joueur.score}</strong></p>
+            <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
+            <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
+        </div>
+
+        <!-- Soldiers Section -->
+        <div class="soldiers-section">
+            <h3>Mes Soldats</h3>
+            <c:forEach var="soldat" items="${joueur.soldats}">
+                <div class="soldier-info">
+                    <p>Soldat ID : <strong>${soldat.id}</strong></p>
+                    <p>Position : <strong>(${soldat.x}, ${soldat.y})</strong></p>
+                    <p>Points de défense : <strong>${soldat.pointsDefense}</strong></p>
+                    <p>Blessé : <strong>${soldat.blesse ? 'Oui' : 'Non'}</strong></p>
+                    <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                        <input type="hidden" name="grilleId" value="${grille.id}">
+                        <input type="hidden" name="action" value="guerirSoldat">
+                        <input type="hidden" name="soldatId" value="${soldat.id}">
+                        <button type="submit">Guérir</button>
+                    </form>
+                </div>
+            </c:forEach>
+        </div>
+
         <table>
             <c:forEach var="i" begin="0" end="${grille.lignes - 1}">
                 <tr>

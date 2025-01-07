@@ -29,7 +29,7 @@ public class JoueurDAO implements AutoCloseable {
     }
 
     @Transactional
-    public Joueur trouverJoueurParId(Long id) {
+    public Joueur trouverJoueurParId(Integer id) {
         try (EntityManager em = emf.createEntityManager()) {
             return em.find(Joueur.class, id);
         }
