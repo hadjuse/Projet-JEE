@@ -22,6 +22,7 @@
             <p>Score : <strong>${joueur.score}</strong></p>
             <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
             <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
+            <p>Nombre de villes : <strong>${joueur.nbVilles}</strong></p>
         </div>
 
         <!-- Soldiers Section -->
@@ -88,6 +89,15 @@
                                             <input type="hidden" name="xSource" value="${i}">
                                             <input type="hidden" name="ySource" value="${j}">
                                             <button type="submit">Occuper la ville</button>
+                                        </form>
+                                    </c:if>
+                                    <c:if test="${joueur.pointsProduction >= 10 && tuile.ville.proprietaire.id == joueur.id}">
+                                        <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                            <input type="hidden" name="action" value="creerSoldat">
+                                            <input type="hidden" name="grilleId" value="${grille.id}">
+                                            <input type="hidden" name="xSource" value="${i}">
+                                            <input type="hidden" name="ySource" value="${j}">
+                                            <button type="submit">Creer un soldat</button>
                                         </form>
                                     </c:if>
                                 </c:when>

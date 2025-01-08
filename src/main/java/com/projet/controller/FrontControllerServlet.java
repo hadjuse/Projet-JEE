@@ -61,6 +61,9 @@ public class FrontControllerServlet extends HttpServlet {
             case "guerirSoldat":
                 actionsController.guerirSoldat(request, response);
                 break;
+            case "creerSoldat":
+                actionsController.creerSoldat(request, response);
+                break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Action non définie");
                 return;

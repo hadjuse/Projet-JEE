@@ -55,6 +55,8 @@ public class ActionsController {
 
         joueur.setNbVilles(0);
         joueur.setNbSoldats(0);
+        joueur.setPointsProduction(10);
+
         System.out.println("Nombre de soldats initialisé: " + joueur.getNbSoldats());
         System.out.println("Nombre de villes initialisé: " + joueur.getNbVilles());
         System.out.println("Score actuel: " + joueur.getScore());
@@ -350,9 +352,11 @@ public class ActionsController {
             throw new IOException("Erreur lors de la redirection vers FrontController", e);
         }
     }
+
     private String getParameter(HttpServletRequest request, String paramName) {
         return request.getParameter(paramName);
     }
+
     private void collecterRessourcesDeLaForet(Grille grille, int xSource, int ySource, Joueur joueur, ForetDAO foretDAO) {
         Foret foret = grille.getTuile(xSource, ySource).getForet();
         int ptGagner = foret.fourrager();
@@ -362,5 +366,30 @@ public class ActionsController {
         foretDAO.mettreAJourForet(foret);
 
         System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
+    }
+
+    public void creerSoldat(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String grilleId = getParameter(request, "grilleId");
+            int xSource = Integer.parseInt(getParameter(request, "xSource"));
+            int ySource = Integer.parseInt(getParameter(request, "ySource"));
+
+            try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); SoldatDAO soldatDAO = new SoldatDAO()) {
+                Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
+                Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+
+                grille.ajouterSoldat(xSource + 1, ySource, joueur);
+                soldatDAO.creerSoldat(grille.getTuile(xSource + 1, ySource).getSoldat());
+
+                joueur.retirerPointsProduction(10);
+                joueur.updateScore();
+                joueurDAO.mettreAJourJoueur(joueur);
+                grilleDAO.enregistrerGrille(grille);
+                request.setAttribute("grille", grille);
+                request.setAttribute("joueur", joueur);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
