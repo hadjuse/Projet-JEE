@@ -67,7 +67,6 @@ public class Grille {
             tuile.setSoldat(soldat);
             tuile.setType(TypeTuile.SOLDATOCCUPE);
 
-            tuile.getSoldat().setProprietaire(joueur);
             tuile.getSoldat().setBlesse(true);
             joueur.getSoldats().add(soldat);
         }
