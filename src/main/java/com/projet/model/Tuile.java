@@ -3,6 +3,9 @@ package com.projet.model;
 import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type_tuile", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("Tuile")
 public class Tuile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +25,11 @@ public class Tuile {
     @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "foret_id", unique = true)
     private Foret foret;
-    @Transient
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinColumn(name = "ville_id", unique = true)
     private Ville ville;
+
     public Tuile(){
     }
     public Tuile(int x, int y, TypeTuile type) {

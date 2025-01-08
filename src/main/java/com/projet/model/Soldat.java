@@ -17,7 +17,7 @@ public class Soldat{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    // Constructeurs
     public Soldat(int x, int y, int coutProduction, Joueur proprietaire) {
         this.x = x;
         this.y = y;
@@ -26,6 +26,18 @@ public class Soldat{
         this.coutProduction = coutProduction;
         this.aJouer = false;
         this.proprietaire = proprietaire;
+        this.proprietaire.addNbSoldats(1);
+    }
+
+    public Soldat(int x, int y, Joueur proprietaire) {
+        this.x = x;
+        this.y = y;
+        this.pointsDefense = 6;
+        this.blesse = false;
+        this.coutProduction = 5;
+        this.aJouer = false;
+        this.proprietaire = proprietaire;
+        this.proprietaire.addNbSoldats(1);
     }
 
     public Soldat() {
@@ -79,7 +91,10 @@ public class Soldat{
 
     public Joueur getProprietaire() { return proprietaire; }
 
-    public void setProprietaire(Joueur proprietaire) {}
+    public void setProprietaire(Joueur proprietaire) {
+        this.proprietaire = proprietaire;
+        proprietaire.addNbSoldats(1);
+    }
 
     // Méthodes
     public void soigner() {
@@ -105,7 +120,7 @@ public class Soldat{
         Tuile tuile = grille.getTuile(x, y);
         switch (tuile.getType()) {
             case VILLE, VILLESOLDAT:
-                if (((Ville) tuile).subirAttaque(attaquer())) {
+                if (tuile.getVille().subirAttaque(attaquer())) {
                     this.setX(x);
                     this.setY(y);
                     tuile.setProprietaire(proprietaire);
@@ -172,5 +187,28 @@ public class Soldat{
 
     public Long getId() {
         return id;
+    }
+    public boolean deplacer(Grille grille, int xDest, int yDest) {
+        Tuile destination = grille.getTuile(xDest, yDest);
+
+        // Gérer la collision avec la forêt ou la montagne
+        if (destination.getType() == TypeTuile.FORET || destination.getType() == TypeTuile.MONTAGNE) {
+            System.out.println("Collision détectée avec " + destination.getType());
+            return false;
+        }
+
+        // Mise à jour des relations
+        Tuile source = grille.getTuile(this.x, this.y);
+        source.setSoldat(null);
+        source.setType(TypeTuile.VIDE);
+
+        destination.setSoldat(this);
+        destination.setType(TypeTuile.SOLDATOCCUPE);
+
+        // Mise à jour des coordonnées du soldat
+        this.x = xDest;
+        this.y = yDest;
+
+        return true;
     }
 }

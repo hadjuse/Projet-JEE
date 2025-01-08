@@ -1,9 +1,7 @@
 package com.projet.controller;
 
-import com.projet.model.Grille;
-import com.projet.model.Joueur;
-import com.projet.persistence.GrilleDAO;
-import com.projet.persistence.JoueurDAO;
+import com.projet.model.*;
+import com.projet.persistence.*;
 import com.projet.utils.button.ButtonStrategy;
 import com.projet.utils.button.actionMove.MoveDown;
 import com.projet.utils.button.actionMove.MoveLeft;
@@ -15,15 +13,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.DataInput;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActionsController {
     private GrilleDAO grilleDAO;
     private JoueurDAO joueurDAO;
+    private VilleDAO villeDAO;
 
     public ActionsController() {
         setGrilleDAO(new GrilleDAO());
         setJoueurDAO(new JoueurDAO());
+        setVilleDAO(new VilleDAO());
     }
 
     public void creerGrille(HttpServletRequest request, HttpServletResponse response) {
@@ -33,23 +36,77 @@ public class ActionsController {
         Grille grille = new Grille(lignes, colonnes);
         Joueur joueur = (Joueur) session.getAttribute("joueur");
 
+        joueur.setTurn(true);
+
+        // Initialisation TurnByTurn manager avec la liste des joueurs
+        List<Joueur> joueurs = new ArrayList<>();
+        joueurs.add(joueur);
+        try (JoueurDAO joueurDAO = new JoueurDAO()) {
+            Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
+            joueur2.setTurn(false);
+            if(joueur2 != null) {
+                joueurs.add(joueur2);
+            }else {
+                System.out.println("Joueur 2 non trouvé");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        TurnByTurn turnManager = new TurnByTurn(joueurs);
+        session.setAttribute("turnManager", turnManager);
+
         // Sauvegarder le joueur actuel s'il n'est pas déjà sauvegardé
         if (joueur.getId() == null) {
-            getJoueurDAO().creerJoueur(joueur);
+            try (JoueurDAO joueurDAO = new JoueurDAO()) {
+                joueurDAO.creerJoueur(joueur);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
+        joueur.setNbVilles(0);
+        joueur.setNbSoldats(0);
+        System.out.println("Nombre de soldats initialisé: " + joueur.getNbSoldats());
+        System.out.println("Nombre de villes initialisé: " + joueur.getNbVilles());
+        System.out.println("Score actuel: " + joueur.getScore());
+
         // Ajouter le premier soldat avec le joueur actuel comme propriétaire
-        grille.ajouterSoldat(0, 0, joueur);
-        // Récupérer un autre joueur existant
-        Joueur autreJoueur = getJoueurDAO().trouverJoueurParNom("hadjuse3");
-        grille.ajouterSoldat(7, 7, autreJoueur);
+        grille.ajouterSoldat(0, 1, joueur);
+        System.out.println("Soldat ajouté, nombre de soldats: " + joueur.getNbSoldats());
+        System.out.println("Score actuel: " + joueur.getScore());
 
         // ajout d'une foret
         grille.ajouterForet(1, 3, 3);
+
+
+        // ajout d'une ville
+        try (JoueurDAO joueurDAO = new JoueurDAO()) {
+            Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
+            grille.ajouterSoldat(0, 5, joueur2); // Soldat du joueur 2
+            grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
+            joueurs.add(joueur2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        grille.ajouterVille(0, 0, joueur); // Ville du joueur 1
+
         // Sauvegarder la grille
-        getGrilleDAO().creerGrille(grille);
+        // Initialisation du score du joueur
+        joueur.updateScore();
+
+        // Envoi des attributs à la vue
+        request.setAttribute("joueur", joueur);
+
+        try (GrilleDAO grilleDAO = new GrilleDAO()) {
+            grilleDAO.creerGrille(grille);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         request.setAttribute("grille", grille);
 
+        // Mise à jour du joueur
+        joueurDAO.mettreAJourJoueur(joueur);
+        //grilleDAO.enregistrerGrille(grille);
         // Log pour vérifier que la grille a été créée
         System.out.println("Grille créée avec succès : " + grille);
     }
@@ -62,12 +119,16 @@ public class ActionsController {
         }
 
         // Récupérer la grille depuis la base de données
-        Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
+        try (GrilleDAO grilleDAO = new GrilleDAO()) {
+            Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
 
-        if (grille == null) {
-            request.setAttribute("message", "Grille non trouvée.");
-        } else {
-            request.setAttribute("grille", grille);
+            if (grille == null) {
+                request.setAttribute("message", "Grille non trouvée.");
+            } else {
+                request.setAttribute("grille", grille);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -78,41 +139,119 @@ public class ActionsController {
         int ySource = Integer.parseInt(request.getParameter("ySource"));
         String direction = request.getParameter("direction");
         System.out.printf("Grille ID: %s, xSource: %d, ySource: %d, direction: %s\n", grilleId, xSource, ySource, direction);
-        Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
-        Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
-        ButtonStrategy strategy;
 
-        switch (direction) {
-            case "up":
-                strategy = new MoveUp(grilleDAO);
-                break;
-            case "down":
-                strategy = new MoveDown(grilleDAO);
-                break;
-            case "left":
-                strategy = new MoveLeft(grilleDAO);
-                break;
-            case "right":
-                strategy = new MoveRight(grilleDAO);
-                break;
-            default:
-                request.setAttribute("message", "Direction invalide.");
-                return;
-        }
-        System.out.printf("Grille ID: %s, xSource: %d, ySource: %d, direction: %s\n", grilleId, xSource, ySource, direction);
-        strategy.action(grille, xSource, ySource);
-        boolean[][] adjacentToSoldat = new boolean[grille.getLignes()][grille.getColonnes()];
-        for (int i = 0; i < grille.getLignes(); i++) {
-            for (int j = 0; j < grille.getColonnes(); j++) {
-                adjacentToSoldat[i][j] = grille.isAdjacentToType(i, j, "SOLDATOCCUPE");
+        try (GrilleDAO grilleDAO = new GrilleDAO()) {
+            Grille grille = grilleDAO.trouverGrilleParId(grilleIdLong);
+            Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+            ButtonStrategy strategy;
+
+            switch (direction) {
+                case "up":
+                    strategy = new MoveUp(grilleDAO);
+                    break;
+                case "down":
+                    strategy = new MoveDown(grilleDAO);
+                    break;
+                case "left":
+                    strategy = new MoveLeft(grilleDAO);
+                    break;
+                case "right":
+                    strategy = new MoveRight(grilleDAO);
+                    break;
+                default:
+                    request.setAttribute("message", "Direction invalide.");
+                    return;
             }
-        }
+            System.out.printf("Grille ID: %s, xSource: %d, ySource: %d, direction: %s\n", grilleId, xSource, ySource, direction);
+            strategy.action(grille, xSource, ySource);
+            boolean[][] adjacentToSoldat = new boolean[grille.getLignes()][grille.getColonnes()];
+            for (int i = 0; i < grille.getLignes(); i++) {
+                for (int j = 0; j < grille.getColonnes(); j++) {
+                    adjacentToSoldat[i][j] = grille.isAdjacentToType(i, j, "SOLDATOCCUPE");
+                }
+            }
 
-        request.setAttribute("grille", grille);
-        request.setAttribute("adjacentToSoldat", adjacentToSoldat);
-        //forwardToFrontController(request, response, "deplacerSoldat");
+            request.setAttribute("grille", grille);
+            request.setAttribute("adjacentToSoldat", adjacentToSoldat);
+            //forwardToFrontController(request, response, "deplacerSoldat");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    public void collecterResources(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String grilleId = getParameter(request, "grilleId");
+            int xSource = Integer.parseInt(getParameter(request, "xSource"));
+            int ySource = Integer.parseInt(getParameter(request, "ySource"));
+
+            try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); ForetDAO foretDAO = DAOFactory.getForetDAO()) {
+                Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
+                Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+
+                collecterRessourcesDeLaForet(grille, xSource, ySource, joueur, foretDAO);
+
+                joueurDAO.mettreAJourJoueur(joueur);
+                request.setAttribute("grille", grille);
+                request.setAttribute("joueur", joueur);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void guerirSoldat(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Long soldatId = Long.parseLong(request.getParameter("soldatId"));
+            Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+
+            for (Soldat soldat : joueur.getSoldats()) {
+                if (soldat.getId().equals(soldatId)) {
+                    soldat.soigner();
+                    break;
+                }
+            }
+
+            try(SoldatDAO soldatDAO = new SoldatDAO()) {
+                Soldat soldat = soldatDAO.trouverSoldatParId(soldatId);
+                soldatDAO.mettreAJourSoldat(soldat);
+            }
+
+            try (JoueurDAO joueurDAO = new JoueurDAO()) {
+                joueurDAO.mettreAJourJoueur(joueur);
+            }
+
+            request.setAttribute("joueur", joueur);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void occuperVille(HttpServletRequest request, HttpServletResponse response) {
+        // Récupération des paramètres de la requête
+        String grilleId = request.getParameter("grilleId");
+        int xSource = Integer.parseInt(request.getParameter("xSource"));
+        int ySource = Integer.parseInt(request.getParameter("ySource"));
+        Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
+        Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
+        Ville ville = grille.getTuile(xSource, ySource).getVille();
+        System.out.println("Ville occupée avec succès");
+        // Attaque de la ville
+        ville.subirAttaque(3); // Attaque de la ville par le soldat factice
+        if (ville.getPointsDefense() <= 0) {
+            // TD enlever la propriété a l'autre joueur
+            ville.setProprietaire(joueur); // La ville est conquise
+            joueur.addNbVilles(1); // Ajout d'une ville au joueur
+            System.out.println("Ville capturée avec succès ");
+            ville.setPointsDefense(12); // Réinitialisation des points de défense
+            joueur.updateScore();
+        }
+        System.out.println("Ville attaquée avec succès il reste: "+ville.getPointsDefense());
+        joueurDAO.mettreAJourJoueur(joueur);
+        villeDAO.mettreAJourVille(ville);
+        request.setAttribute("grille", grille);
+        request.setAttribute("joueur", joueur);
+    }
 
     public void setGrilleDAO(GrilleDAO grilleDAO) {
         this.grilleDAO = grilleDAO;
@@ -130,6 +269,14 @@ public class ActionsController {
         return joueurDAO;
     }
 
+    public void setVilleDAO(VilleDAO villeDAO) {
+        this.villeDAO = villeDAO;
+    }
+
+    public VilleDAO getVilleDAO() {
+        return villeDAO;
+    }
+
     private void forwardToFrontController(HttpServletRequest request, HttpServletResponse response, String action) throws IOException {
         request.setAttribute("action", action);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/FrontController");
@@ -139,17 +286,81 @@ public class ActionsController {
             throw new IOException("Erreur lors de la redirection vers FrontController", e);
         }
     }
+    private String getParameter(HttpServletRequest request, String paramName) {
+        return request.getParameter(paramName);
+    }
+    private void collecterRessourcesDeLaForet(Grille grille, int xSource, int ySource, Joueur joueur, ForetDAO foretDAO) {
+        Foret foret = grille.getTuile(xSource, ySource).getForet();
+        int ptGagner = foret.fourrager();
+        joueur.ajouterPointsProduction(ptGagner);
 
-    public void collecterResources(HttpServletRequest request, HttpServletResponse response) {
-        String grilleId = request.getParameter("grilleId");
-        int xSource = Integer.parseInt(request.getParameter("xSource"));
-        int ySource = Integer.parseInt(request.getParameter("ySource"));
-        Grille grille = getGrilleDAO().trouverGrilleParId(Long.parseLong(grilleId));
-        Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
-        joueur.ajouterPointsProduction(grille.getTuile(xSource, ySource).getForet().getRessourcesProduction());
-        System.out.println("Ressources collectées avec succès "+joueur.getPointsProduction());
-        joueurDAO.mettreAJourJoueur(joueur);
-        request.setAttribute("grille", grille);
-        request.setAttribute("joueur", joueur);
+        // Mettre à jour la forêt dans la base de données
+        foretDAO.mettreAJourForet(foret);
+
+        System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
+    }
+
+    public void passerTour(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("Passage du tour");
+        try {
+            // Récupérer la session et le gestionnaire de tours
+            HttpSession session = request.getSession(false);
+            TurnByTurn turnManager = (TurnByTurn) session.getAttribute("turnManager");
+
+            if (turnManager == null) {
+                // Réinitialiser le turnManager si nécessaire
+                List<Joueur> joueurs = new ArrayList<>();
+                Joueur joueur = (Joueur) session.getAttribute("joueur");
+                joueurs.add(joueur);
+                try (JoueurDAO joueurDAO = new JoueurDAO()) {
+                    Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
+                    if (joueur2 != null) {
+                        joueurs.add(joueur2);
+                    } else {
+                        System.err.println("Erreur : Joueur 'hadjuse3' non trouvé.");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                turnManager = new TurnByTurn(joueurs);
+                session.setAttribute("turnManager", turnManager);
+            }
+
+            // Passer au joueur suivant
+            turnManager.nextTurn();
+
+            // Mettre à jour l'objet joueur dans la session
+            Joueur currentPlayer = turnManager.getCurrentPlayer();
+            session.setAttribute("joueur", currentPlayer);
+
+            // Mettre à jour le joueur dans la base de données si nécessaire
+            try (JoueurDAO joueurDAO = new JoueurDAO()) {
+                joueurDAO.mettreAJourJoueur(currentPlayer);
+            }
+
+            // Récupérer la grille depuis la base de données
+            Grille grille = (Grille) session.getAttribute("grille");
+            if (grille == null) {
+                try (GrilleDAO grilleDAO = new GrilleDAO()) {
+                    grille = grilleDAO.trouverGrilleParId(Long.parseLong(request.getParameter("grilleId")));
+                    session.setAttribute("grille", grille);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Préparer les données pour la vue
+            request.setAttribute("grille", grille);
+            request.setAttribute("joueur", currentPlayer);
+
+            System.out.println("Tour passé au joueur suivant : " + currentPlayer.getNom());
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Erreur lors du passage du tour.");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 }

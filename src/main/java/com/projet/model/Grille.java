@@ -64,18 +64,21 @@ public class Grille {
             Soldat soldat = new Soldat(x, y, 10, joueur); // Exemple de coût de production
             tuile.setSoldat(soldat);
             tuile.setType(TypeTuile.SOLDATOCCUPE);
+
             tuile.getSoldat().setProprietaire(joueur);
+            joueur.getSoldats().add(soldat);
         }
     }
+
     public void ajouterVille(int x, int y, Joueur joueur) {
         Tuile tuile = getTuile(x, y);
         if (tuile != null && tuile.getType() == TypeTuile.VIDE) {
-            Ville ville = new Ville(x, y, 3);
+            Ville ville = new Ville(x, y, 3, joueur);
             tuile.setVille(ville);
             tuile.setType(TypeTuile.VILLE);
-            tuile.getVille().setProprietaire(joueur);
         }
     }
+
     public void ajouterForet(int x, int y, int ressourcesProduction) {
         Tuile tuile = getTuile(x, y);
         if (tuile != null && tuile.getType() == TypeTuile.VIDE) {

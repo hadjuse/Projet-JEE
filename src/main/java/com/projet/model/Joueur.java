@@ -2,6 +2,9 @@ package com.projet.model;
 import jakarta.persistence.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Joueur {
     @Id
@@ -10,6 +13,9 @@ public class Joueur {
 
     @Column(nullable = false, unique = true)
     private String nom;
+
+    @Column(nullable = false)
+    private boolean turn;
 
     @Column(nullable = false)
     private int score;
@@ -28,16 +34,21 @@ public class Joueur {
 
     @Column(nullable = false)
     private int pointProduction;
+
     @Column(nullable = false)
     private String password;
+
     @Transient
     private int x;
+
     @Transient
     private int y;
+
 
     public void setPassword(String password) {
         this.password = hashPassword(password);
     }
+
     public static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -51,14 +62,29 @@ public class Joueur {
             throw new RuntimeException(e);
         }
     }
+    @Transient
+    private List<Soldat> soldats=new ArrayList<>();
+    // autres champs et méthodes
 
+    public List<Soldat> getSoldats() {
+        return soldats;
+    }
     public int getPointsProduction() {
         return pointProduction;
+    }
+
+    public boolean isTurn(){
+        return turn;
+    }
+
+    public void setTurn(boolean turn){
+        this.turn=turn;
     }
 
     public void setPointsProduction(int pointProduction) {
         this.pointProduction = pointProduction;
     }
+
     public Integer getId() {
         return id;
     }
@@ -167,9 +193,16 @@ public class Joueur {
         return password;
     }
 
+    public void updateScore() {
+        setScore(getNbVilles() * 10 + getNbSoldats() * 3);
+        System.out.println("Nombre de soldats: " + getNbSoldats());
+        System.out.println("Nombre de villes: " + getNbVilles());
+    }
+
     public void ajouterPointsProduction(int productionParTour) {
         pointProduction += productionParTour;
     }
+
     public void retirerPointsProduction(int productionParTour) {
         pointProduction -= productionParTour;
     }

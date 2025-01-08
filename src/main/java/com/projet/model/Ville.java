@@ -1,26 +1,63 @@
 package com.projet.model;
 
-public class Ville extends Tuile {
+import jakarta.persistence.*;
+
+@Entity
+public class Ville {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "proprietaire_id")
+    private Joueur proprietaire;
+
     private int pointsDefense;
     private int productionParTour;
 
+
     public Ville(int x, int y, int productionParTour) {
-        super(x,y,TypeTuile.VILLE);
         this.pointsDefense = 12;
         this.productionParTour = productionParTour;
     }
 
+    public Ville(int x, int y, Joueur proprietaire) {
+        this.pointsDefense = 12;
+        this.productionParTour = 10;
+        this.proprietaire = proprietaire;
+        proprietaire.addNbVilles(1);
+    }
+
+    public Ville(int x, int y, int productionParTour, Joueur proprietaire) {
+        this.pointsDefense = 12;
+        this.productionParTour = productionParTour;
+        this.proprietaire = proprietaire;
+        proprietaire.addNbVilles(1);
+    }
+
+    public Ville() {
+    }
+
     // Getters et Setters
     public int getPointsDefense() {
-        return pointsDefense;
+        return this.pointsDefense;
+    }
+
+    public Joueur getProprietaire() {
+        return proprietaire;
+    }
+
+    public int getProductionParTour() {
+        return productionParTour;
     }
 
     public void setPointsDefense(int pointsDefense) {
         this.pointsDefense = pointsDefense;
     }
 
-    public int getProductionParTour() {
-        return productionParTour;
+    public void setProprietaire(Joueur proprietaire) {
+        this.proprietaire = proprietaire;
     }
 
     public void setProductionParTour(int productionParTour) {
@@ -35,7 +72,7 @@ public class Ville extends Tuile {
     }
 
     public boolean subirAttaque(int pointsAttaque) {
-        pointsDefense -= pointsAttaque;
+        this.pointsDefense -= pointsAttaque;
         if (pointsDefense <= 0) {
             pointsDefense = 0;
             return true; // La ville est capturée
@@ -48,5 +85,13 @@ public class Ville extends Tuile {
             this.getProprietaire().addNbSoldats(1);
             this.getProprietaire().retirerPointsProduction(20);
         }
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
