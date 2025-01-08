@@ -41,7 +41,8 @@ public class Joueur {
     @Transient
     private int y;
 
-
+    @ManyToOne
+    private Grille grille;
     public void setPassword(String password) {
         this.password = hashPassword(password);
     }
@@ -198,5 +199,13 @@ public class Joueur {
 
     public void setSoldats(List<Soldat> soldats) {
         this.soldats = soldats;
+    }
+
+    public Grille getGrille() {
+        return grille;
+    }
+
+    public void setGrille(Grille grille) {
+        this.grille = grille;
     }
 }

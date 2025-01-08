@@ -15,8 +15,8 @@ public class Grille {
     private int colonnes;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
     private List<Tuile> tuiles;
-    @OneToOne
-    private Soldat soldat;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
+    private List<Soldat> soldats;
 
     public Grille(){
     }
@@ -66,7 +66,7 @@ public class Grille {
             Soldat soldat = new Soldat(x, y, 10, joueur); // Exemple de coût de production
             tuile.setSoldat(soldat);
             tuile.setType(TypeTuile.SOLDATOCCUPE);
-
+            soldat.setGrille(this);
             tuile.getSoldat().setBlesse(true);
             joueur.getSoldats().add(soldat);
         }
@@ -138,11 +138,11 @@ public class Grille {
         this.tuiles = tuiles;
     }
 
-    public Soldat getSoldat() {
-        return soldat;
+    public List<Soldat> getSoldats() {
+        return soldats;
     }
 
-    public void setSoldat(Soldat soldat) {
-        this.soldat = soldat;
+    public void setSoldats(List<Soldat> soldats) {
+        this.soldats = soldats;
     }
 }
