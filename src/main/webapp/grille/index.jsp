@@ -126,6 +126,7 @@
 <!-- Logout Link -->
 <div class="logout-link">
     <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>
+    <a href="${pageContext.request.contextPath}/retrieveGrilles">Rejoindre une autre partie</a>
 </div>
 
 </body>
