@@ -17,7 +17,7 @@ public class Soldat{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @ManyToOne
     private Grille grille;
 
     // Constructeurs

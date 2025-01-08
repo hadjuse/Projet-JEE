@@ -4,6 +4,8 @@ import com.projet.model.Joueur;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 public class JoueurDAO implements AutoCloseable {
     @PersistenceContext
     private EntityManagerFactory emf;
@@ -74,6 +76,12 @@ public class JoueurDAO implements AutoCloseable {
         }
     }
 
+    @Transactional
+    public List<Joueur> trouverTousLesJoueurs() {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT j FROM Joueur j", Joueur.class).getResultList();
+        }
+    }
     @Override
     public void close() throws Exception {
         emf.close();

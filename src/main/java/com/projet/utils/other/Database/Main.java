@@ -10,11 +10,11 @@ public class Main {
         EntityManager em = emf.createEntityManager();
 
         try {
-            TableResetUtil.resetTable(em, "Tuile");
-            TableResetUtil.resetTable(em, "Soldat");
-            TableResetUtil.resetTable(em, "Grille");
-            TableResetUtil.resetTable(em, "Foret");
-            TableResetUtil.resetTable(em, "Ville");
+            TableResetUtil.dropTable(em, "Tuile");
+            TableResetUtil.dropTable(em, "Soldat");
+            TableResetUtil.dropTable(em, "Grille");
+            TableResetUtil.dropTable(em, "Foret");
+            TableResetUtil.dropTable(em, "Ville");
             //TableResetUtil.resetTable(em, "Joueur");
         } finally {
             em.close();

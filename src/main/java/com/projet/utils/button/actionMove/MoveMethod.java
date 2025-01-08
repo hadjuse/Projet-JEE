@@ -3,6 +3,7 @@ package com.projet.utils.button.actionMove;
 import com.projet.model.Grille;
 import com.projet.model.Soldat;
 import com.projet.model.Tuile;
+import com.projet.model.TypeTuile;
 import com.projet.persistence.DAOFactory;
 import com.projet.persistence.GrilleDAO;
 import com.projet.persistence.TuileDAO;
@@ -34,19 +35,22 @@ public class MoveMethod {
                 em.getTransaction().rollback();
                 return;
             }
-
+            source.getGrille().getTuile(xSource, ySource).setType(TypeTuile.VIDE);
             soldat = em.merge(soldat);
             // Utiliser la méthode de déplacement du soldat
             if (!soldat.deplacer(grille, xDest, yDest)) {
                 em.getTransaction().rollback();
                 return;
             }
+
             Tuile destination = grille.getTuile(xDest, yDest);
             destination.setSoldat(soldat);
             source.setSoldat(null);
+
             tuileDAO.mettreAJourTuile(source);
             tuileDAO.mettreAJourTuile(destination);
             grilleDAO.enregistrerGrille(grille);
+
             em.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
