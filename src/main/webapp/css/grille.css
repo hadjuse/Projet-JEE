@@ -1,4 +1,6 @@
-/* General styles */
+/* grille.css */
+
+/* Styles généraux */
 body {
     display: flex;
     flex-direction: column;
@@ -7,7 +9,7 @@ body {
     margin: 0;
     font-family: 'Arial', sans-serif;
     position: relative;
-    background-color: #f4f4f9; /* Light background for better aesthetics */
+    background-color: #f4f4f9; /* Fond clair pour une meilleure esthétique */
     color: #333;
 }
 
@@ -16,15 +18,28 @@ h1 {
     color: #2c3e50;
 }
 
-/* Player Info Box */
+/* Conteneur principal */
+.main-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Conteneur des informations du joueur et des sections */
+.info-container {
+    display: flex;
+    flex-direction: column; /* Aligne les sections verticalement */
+    margin-right: 20px; /* Espace entre les infos et la table */
+}
+
+/* Boîte d'informations du joueur */
 .player-info {
-    align-self: flex-start;
-    margin: 10px 0 0 10px; /* Réduit l'espace */
+    margin-bottom: 20px;
     padding: 20px;
     border: 1px solid #ddd;
     background-color: #fff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
 }
 
 .player-info h3 {
@@ -36,110 +51,13 @@ h1 {
     margin: 5px 0;
 }
 
-/* Grid Table */
-.table-container {
-    display: flex;
-    justify-content: center; /* Centré horizontalement */
-    align-items: flex-start; /* Aligné en haut */
-    margin-top: 10px; /* Réduit l'espace au-dessus de la table */
-    flex-wrap: wrap; /* Permet de passer à la ligne si nécessaire */
-}
-
-table {
-    border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden; /* Ensure border-radius applies to all edges */
-}
-
-td {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #ccc;
-    text-align: center;
-    vertical-align: middle; /* Center content vertically */
-    position: relative;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-td:hover {
-    transform: scale(1.05);
-    background-color: #f0f8ff; /* Light blue hover effect */
-}
-
-img {
-    width: 80px;
-    height: 80px;
-}
-
-/* Buttons */
-button {
-    padding: 8px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #3498db;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-3px);
-}
-
-button:active {
-    transform: translateY(0);
-    background-color: #1e6f96;
-}
-
-/* Boutons de déplacement centrés dans la case */
-.button-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Deux boutons par ligne */
-    gap: 4px; /* Espace entre les boutons */
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centre la zone au milieu de la cellule */
-}
-
-/* Logout Link */
-.logout-link {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.logout-link a {
-    font-size: 16px;
-    padding: 10px 20px;
-    background-color: #e74c3c;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.logout-link a:hover {
-    background-color: #c0392b;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
 /* Section des soldats */
 .soldiers-section {
-    margin-top: 10px; /* Réduit l'espace */
+    margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
-    margin-left: 10px; /* Réduit l'espace */
-    flex: 1; /* Permet de prendre l'espace disponible */
+    border-radius: 5px;
 }
 
 .soldiers-section h3 {
@@ -184,16 +102,165 @@ button:active {
     background-color: #0056b3;
 }
 
+/* Section des villes */
+.cities-section {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.cities-section h3 {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.city-info {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.city-info p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #555;
+}
+
+.city-info strong {
+    color: #000;
+}
+
+.city-info form {
+    margin-top: 10px;
+}
+
+.city-info button {
+    padding: 5px 10px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.city-info button:hover {
+    background-color: #0056b3;
+}
+
+/* Conteneur de la table */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+table {
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden; /* Assure que border-radius s'applique à tous les bords */
+}
+
+td {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: middle; /* Centre le contenu verticalement */
+    position: relative;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+td:hover {
+    transform: scale(1.05);
+    background-color: #f0f8ff; /* Effet de survol bleu clair */
+}
+
+img {
+    width: 80px;
+    height: 80px;
+}
+
+/* Boutons */
+button {
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-3px);
+}
+
+button:active {
+    transform: translateY(0);
+    background-color: #1e6f96;
+}
+
+/* Conteneur des boutons de déplacement centré dans la case */
+.button-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Deux boutons par ligne */
+    gap: 4px; /* Espace entre les boutons */
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centre la zone au milieu de la cellule */
+}
+
+/* Lien de déconnexion */
+.logout-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.logout-link a {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logout-link a:hover {
+    background-color: #c0392b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
-    .table-container {
-        margin-top: 10px; /* Réduit l'espace */
+    .main-container {
         flex-direction: column; /* Passe en colonne sur petits écrans */
+        align-items: center;
     }
 
-    .soldiers-section {
-        margin-left: 0; /* Supprime le décalage à gauche */
-        margin-top: 10px; /* Ajoute un espace en haut */
+    .info-container {
+        margin-right: 0; /* Supprime l'espace à droite */
+        width: 100%; /* Prend toute la largeur */
+    }
+
+    .table-container {
         width: 100%; /* Prend toute la largeur */
     }
 }

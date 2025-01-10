@@ -17,7 +17,8 @@ public class Grille {
     private List<Tuile> tuiles;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
     private List<Soldat> soldats;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
+    private List<Ville> villes;
     public Grille(){
     }
     /**
@@ -78,6 +79,8 @@ public class Grille {
             Ville ville = new Ville(x, y, 3, joueur);
             tuile.setVille(ville);
             tuile.setType(TypeTuile.VILLE);
+            ville.setGrille(this);
+            joueur.getVilles().add(ville);
         }
     }
 
@@ -144,5 +147,13 @@ public class Grille {
 
     public void setSoldats(List<Soldat> soldats) {
         this.soldats = soldats;
+    }
+
+    public List<Ville> getVilles() {
+        return villes;
+    }
+
+    public void setVilles(List<Ville> villes) {
+        this.villes = villes;
     }
 }

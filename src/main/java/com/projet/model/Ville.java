@@ -15,10 +15,14 @@ public class Ville {
 
     private int pointsDefense;
     private int productionParTour;
-
-
+    private int x;
+    private int y;
+    @ManyToOne
+    private Grille grille;
     public Ville(int x, int y, int productionParTour) {
         this.pointsDefense = 12;
+        this.x = x;
+        this.y = y;
         this.productionParTour = productionParTour;
     }
 
@@ -93,5 +97,29 @@ public class Ville {
 
     public Long getId() {
         return id;
+    }
+
+    public Grille getGrille() {
+        return grille;
+    }
+
+    public void setGrille(Grille grille) {
+        this.grille = grille;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getY() {
+        return y;
     }
 }
