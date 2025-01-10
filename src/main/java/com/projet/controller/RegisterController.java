@@ -27,6 +27,7 @@ public class RegisterController extends HttpServlet {
         joueur.setNbTuiles(0);
         joueur.setPointsProduction(0);
         joueur.setNom(nom);
+        joueur.setTurn(false);
     }
 
     private void throwErrorWhenJoueurNotRegisterCorrectly(HttpServletResponse response, Exception e) throws IOException {

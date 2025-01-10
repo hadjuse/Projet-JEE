@@ -7,6 +7,8 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 public class VilleDAO implements AutoCloseable {
     @PersistenceContext
     private EntityManagerFactory emf;
@@ -63,5 +65,13 @@ public class VilleDAO implements AutoCloseable {
     @Override
     public void close() throws Exception {
         emf.close();
+    }
+
+    public List<Ville> trouverVillesParJoueurId(long l) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.createQuery("SELECT v FROM Ville v WHERE v.proprietaire.id = :id", Ville.class)
+                    .setParameter("id", l)
+                    .getResultList();
+        }
     }
 }

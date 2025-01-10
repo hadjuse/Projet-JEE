@@ -23,6 +23,7 @@
 <!-- Grid Display -->
 <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
     <div class="table-container">
+
         <!-- Soldiers Section -->
         <div class="soldiers-section">
             <h3>Mes Soldats</h3>
@@ -44,77 +45,102 @@
             </c:forEach>
         </div>
 
-        <table>
-            <c:forEach var="i" begin="0" end="${grille.lignes - 1}">
-                <tr>
-                    <c:forEach var="j" begin="0" end="${grille.colonnes - 1}">
-                        <td>
-                            <c:set var="tuile" value="${grille.getTuile(i,j)}"/>
-                            <c:choose>
-                                <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
-                                    <img src="icons/Large/soldier.png" alt="Soldier">
-                                    <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id}">
-                                        <div class="controls">
+        <!-- Cities Section -->
+        <div class="cities-section">
+            <h3>Mes Villes</h3>
+            <c:forEach var="ville" items="${joueur.villes}">
+                <c:if test="${ville.grille.id == grille.id}">
+                    <div class="city-info">
+                        <p>Ville ID : <strong>${ville.id}</strong></p>
+                        <p>Position : <strong>(${ville.x}, ${ville.y})</strong></p>
+                        <p>Production par tour : <strong>${ville.productionParTour}</strong></p>
+                        <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                            <input type="hidden" name="grilleId" value="${grille.id}">
+                            <input type="hidden" name="action" value="ameliorerVille">
+                            <input type="hidden" name="villeId" value="${ville.id}">
+                            <button type="submit">Améliorer</button>
+                        </form>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </div>
+    </div>
+
+    <!-- Grid Display -->
+    <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
+        <div class="table-container">
+            <table>
+                <c:forEach var="i" begin="0" end="${grille.lignes - 1}">
+                    <tr>
+                        <c:forEach var="j" begin="0" end="${grille.colonnes - 1}">
+                            <td>
+                                <c:set var="tuile" value="${grille.getTuile(i,j)}"/>
+                                <c:choose>
+                                    <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
+                                        <img src="icons/Large/soldier.png" alt="Soldier">
+                                        <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id}">
+                                            <div class="controls">
+                                                <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                                    <input type="hidden" name="action" value="deplacerSoldat">
+                                                    <input type="hidden" name="grilleId" value="${grille.id}">
+                                                    <input type="hidden" name="xSource" value="${i}">
+                                                    <input type="hidden" name="ySource" value="${j}">
+                                                    <button type="submit" name="direction" value="up">Up</button>
+                                                    <button type="submit" name="direction" value="down">Down</button>
+                                                    <button type="submit" name="direction" value="left">Left</button>
+                                                    <button type="submit" name="direction" value="right">Right</button>
+                                                </form>
+                                            </div>
+                                        </c:if>
+                                    </c:when>
+                                    <c:when test="${tuile.getType() == 'FORET'}">
+                                        <img src="icons/Large/forest.png" alt="Forêt">
+                                        <c:if test="${adjacentToSoldat[i][j]}">
                                             <form action="${pageContext.request.contextPath}/FrontController" method="post">
-                                                <input type="hidden" name="action" value="deplacerSoldat">
+                                                <input type="hidden" name="action" value="collecterRessources">
                                                 <input type="hidden" name="grilleId" value="${grille.id}">
                                                 <input type="hidden" name="xSource" value="${i}">
                                                 <input type="hidden" name="ySource" value="${j}">
-                                                <button type="submit" name="direction" value="up">Up</button>
-                                                <button type="submit" name="direction" value="down">Down</button>
-                                                <button type="submit" name="direction" value="left">Left</button>
-                                                <button type="submit" name="direction" value="right">Right</button>
+                                                <button type="submit">Collecter Ressources</button>
                                             </form>
-                                        </div>
-                                    </c:if>
-                                </c:when>
-                                <c:when test="${tuile.getType() == 'FORET'}">
-                                    <img src="icons/Large/forest.png" alt="Forêt">
-                                    <c:if test="${adjacentToSoldat[i][j]}">
-                                        <form action="${pageContext.request.contextPath}/FrontController" method="post">
-                                            <input type="hidden" name="action" value="collecterRessources">
-                                            <input type="hidden" name="grilleId" value="${grille.id}">
-                                            <input type="hidden" name="xSource" value="${i}">
-                                            <input type="hidden" name="ySource" value="${j}">
-                                            <button type="submit">Collecter Ressources</button>
-                                        </form>
-                                    </c:if>
-                                </c:when>
-                                <c:when test="${tuile.getType() == 'VILLE'}">
-                                    <img src="icons/Large/city.png" alt="Ville">
-                                    <c:if test="${adjacentToSoldat[i][j] && tuile.ville.proprietaire.id != joueur.id}">
-                                        <form action="${pageContext.request.contextPath}/FrontController" method="post">
-                                            <input type="hidden" name="action" value="occuperVille">
-                                            <input type="hidden" name="grilleId" value="${grille.id}">
-                                            <input type="hidden" name="xSource" value="${i}">
-                                            <input type="hidden" name="ySource" value="${j}">
-                                            <button type="submit">Occuper la ville</button>
-                                        </form>
-                                    </c:if>
-                                    <c:if test="${joueur.pointsProduction >= 10 && tuile.ville.proprietaire.id == joueur.id}">
-                                        <form action="${pageContext.request.contextPath}/FrontController" method="post">
-                                            <input type="hidden" name="action" value="creerSoldat">
-                                            <input type="hidden" name="grilleId" value="${grille.id}">
-                                            <input type="hidden" name="xSource" value="${i}">
-                                            <input type="hidden" name="ySource" value="${j}">
-                                            <button type="submit">Creer un soldat</button>
-                                        </form>
-                                    </c:if>
-                                </c:when>
-                                <c:when test="${tuile.getType() == 'MONTAGNE'}">
-                                    <img src="icons/Large/montain.png" alt="Montagne">
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="icons/Large/empty.png" alt="Empty">
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                    </c:forEach>
-                </tr>
-            </c:forEach>
-        </table>
-    </div>
-</c:if>
+                                        </c:if>
+                                    </c:when>
+                                    <c:when test="${tuile.getType() == 'VILLE'}">
+                                        <img src="icons/Large/city.png" alt="Ville">
+                                        <c:if test="${adjacentToSoldat[i][j] && tuile.ville.proprietaire.id != joueur.id}">
+                                            <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                                <input type="hidden" name="action" value="occuperVille">
+                                                <input type="hidden" name="grilleId" value="${grille.id}">
+                                                <input type="hidden" name="xSource" value="${i}">
+                                                <input type="hidden" name="ySource" value="${j}">
+                                                <button type="submit">Occuper la ville</button>
+                                            </form>
+                                        </c:if>
+                                        <c:if test="${joueur.pointsProduction >= 10 && tuile.ville.proprietaire.id == joueur.id}">
+                                            <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                                <input type="hidden" name="action" value="creerSoldat">
+                                                <input type="hidden" name="grilleId" value="${grille.id}">
+                                                <input type="hidden" name="xSource" value="${i}">
+                                                <input type="hidden" name="ySource" value="${j}">
+                                                <button type="submit">Creer un soldat</button>
+                                            </form>
+                                        </c:if>
+                                    </c:when>
+                                    <c:when test="${tuile.getType() == 'MONTAGNE'}">
+                                        <img src="icons/Large/montain.png" alt="Montagne">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="icons/Large/empty.png" alt="Empty">
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                        </c:forEach>
+                    </tr>
+                </c:forEach>
+            </table>
+        </div>
+    </c:if>
+</div>
 
 <!-- Invalid Grid Message -->
 <c:if test="${grille.lignes <= 0 || grille.colonnes <= 0}">
@@ -124,7 +150,7 @@
 <!-- Logout Link -->
 <div class="logout-link">
     <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>
-    <a href="${pageContext.request.contextPath}/retrieveGrilles">Rejoindre une autre partie</a>
+    <a href="${pageContext.request.contextPath}/connected">Retour au menu</a>
 </div>
 
 </body>

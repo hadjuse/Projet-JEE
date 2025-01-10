@@ -41,6 +41,7 @@ public class Joueur {
     @Transient
     private int y;
 
+    private boolean turn;
     @ManyToOne
     private Grille grille;
     public void setPassword(String password) {
@@ -62,6 +63,8 @@ public class Joueur {
     }
     @Transient
     private List<Soldat> soldats=new ArrayList<>();
+    @Transient
+    private List<Ville> villes=new ArrayList<>();
     // autres champs et méthodes
 
     public List<Soldat> getSoldats() {
@@ -207,5 +210,21 @@ public class Joueur {
 
     public void setGrille(Grille grille) {
         this.grille = grille;
+    }
+
+    public void setTurn(boolean turn) {
+        this.turn = turn;
+    }
+
+    public boolean isTurn() {
+        return turn;
+    }
+
+    public List<Ville> getVilles() {
+        return villes;
+    }
+
+    public void setVilles(List<Ville> villes) {
+        this.villes = villes;
     }
 }

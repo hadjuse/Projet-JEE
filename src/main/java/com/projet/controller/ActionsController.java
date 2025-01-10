@@ -42,7 +42,7 @@ public class ActionsController {
         HttpSession session = request.getSession(false);
         Grille grille = new Grille(lignes, colonnes);
         Joueur joueur = (Joueur) session.getAttribute("joueur");
-
+        joueur.setTurn(true);
 
         // Sauvegarder le joueur actuel s'il n'est pas déjà sauvegardé
         if (joueur.getId() == null) {
@@ -135,11 +135,10 @@ public class ActionsController {
         int ySource = Integer.parseInt(request.getParameter("ySource"));
         String direction = request.getParameter("direction");
 
-        try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); SoldatDAO soldatDAO = new SoldatDAO()) {
+        try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); SoldatDAO soldatDAO = new SoldatDAO(); VilleDAO villeDAO = new VilleDAO()) {
 
             Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
             Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
-
 
             ButtonStrategy strategy = getButtonStrategy(direction, grilleDAO);
             if (strategy == null) {
@@ -150,16 +149,33 @@ public class ActionsController {
             // Exécution de la stratégie de déplacement
             strategy.action(grille, xSource, ySource);
 
-            // Mise à jour des informations du joueur et des soldats
+            // Mise à jour des informations du joueur, des soldats et des villes
             joueur = joueurDAO.trouverJoueurParId(joueur.getId());
             List<Soldat> soldats = soldatDAO.trouverSoldatsParJoueurId(joueur.getId().longValue());
+            List<Ville> villes = villeDAO.trouverVillesParJoueurId(joueur.getId().longValue());
             joueur.setSoldats(soldats);
+            joueur.setVilles(villes);
 
             // Mise à jour des attributs de la requête
-            updateRequestAttributes(request, grille, joueur, soldats);
+            updateRequestAttributes(request, grille, joueur, soldats, villes);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateRequestAttributes(HttpServletRequest request, Grille grille, Joueur joueur, List<Soldat> soldats, List<Ville> villes) {
+        boolean[][] adjacentToSoldat = new boolean[grille.getLignes()][grille.getColonnes()];
+        for (int i = 0; i < grille.getLignes(); i++) {
+            for (int j = 0; j < grille.getColonnes(); j++) {
+                adjacentToSoldat[i][j] = grille.isAdjacentToType(i, j, "SOLDATOCCUPE");
+            }
+        }
+
+        request.setAttribute("grille", grille);
+        request.setAttribute("adjacentToSoldat", adjacentToSoldat);
+        request.setAttribute("joueur", joueur);
+        request.setAttribute("soldats", soldats);
+        request.setAttribute("villes", villes);
     }
 
     private ButtonStrategy getButtonStrategy(String direction, GrilleDAO grilleDAO) {
@@ -177,19 +193,6 @@ public class ActionsController {
         }
     }
 
-    private void updateRequestAttributes(HttpServletRequest request, Grille grille, Joueur joueur, List<Soldat> soldats) {
-        boolean[][] adjacentToSoldat = new boolean[grille.getLignes()][grille.getColonnes()];
-        for (int i = 0; i < grille.getLignes(); i++) {
-            for (int j = 0; j < grille.getColonnes(); j++) {
-                adjacentToSoldat[i][j] = grille.isAdjacentToType(i, j, "SOLDATOCCUPE");
-            }
-        }
-
-        request.setAttribute("grille", grille);
-        request.setAttribute("adjacentToSoldat", adjacentToSoldat);
-        request.setAttribute("joueur", joueur);
-        request.setAttribute("soldats", soldats);
-    }
 
 
     public void collecterResources(HttpServletRequest request, HttpServletResponse response) {
@@ -204,7 +207,8 @@ public class ActionsController {
 
                 collecterRessourcesDeLaForet(grille, xSource, ySource, joueur, foretDAO);
 
-                joueurDAO.mettreAJourJoueur(joueur);
+                mettreAJourJoueur(joueur);
+                grilleDAO.enregistrerGrille(grille);
                 request.setAttribute("grille", grille);
                 request.setAttribute("joueur", joueur);
             }
@@ -364,7 +368,6 @@ public class ActionsController {
 
         // Mettre à jour la forêt dans la base de données
         foretDAO.mettreAJourForet(foret);
-
         System.out.println("Ressources collectées avec succès " + joueur.getPointsProduction());
     }
 
