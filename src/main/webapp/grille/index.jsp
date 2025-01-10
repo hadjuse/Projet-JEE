@@ -78,18 +78,18 @@
                                 <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
                                     <img src="icons/Large/soldier.png" alt="Soldier">
                                     <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id}">
-                                        <div class="controls">
-                                            <form action="${pageContext.request.contextPath}/FrontController" method="post">
-                                                <input type="hidden" name="action" value="deplacerSoldat">
-                                                <input type="hidden" name="grilleId" value="${grille.id}">
-                                                <input type="hidden" name="xSource" value="${i}">
-                                                <input type="hidden" name="ySource" value="${j}">
-                                                <button type="submit" name="direction" value="up">Up</button>
-                                                <button type="submit" name="direction" value="down">Down</button>
-                                                <button type="submit" name="direction" value="left">Left</button>
-                                                <button type="submit" name="direction" value="right">Right</button>
-                                            </form>
-                                        </div>
+                                        <form action="${pageContext.request.contextPath}/FrontController" method="post">
+                                            <input type="hidden" name="action" value="deplacerSoldat">
+                                            <input type="hidden" name="grilleId" value="${grille.id}">
+                                            <input type="hidden" name="xSource" value="${i}">
+                                            <input type="hidden" name="ySource" value="${j}">
+                                            <div class ="controls">
+                                                <button type="submit" name="direction" value="up" class = "controls">Up</button>
+                                                <button type="submit" name="direction" value="down" class = "controls">Down</button>
+                                                <button type="submit" name="direction" value="left" class="controls">Left</button>
+                                                <button type="submit" name="direction" value="right" class="controls">Right</button>
+                                            </div>
+                                        </form>
                                     </c:if>
                                 </c:when>
                                 <c:when test="${tuile.getType() == 'FORET'}">

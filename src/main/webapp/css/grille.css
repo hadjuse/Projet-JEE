@@ -49,25 +49,33 @@ h1 {
 
 /* Grille */
 table {
-    border-collapse: collapse;
+    border-collapse: collapse; /* Évite les espaces entre les bordures */
     margin: 0 auto;
     width: 100%; /* Remplit la largeur du conteneur */
     max-width: 600px;
+    background: #333;
 }
 
 table td {
     width: 50px;
     height: 50px;
-    border: 1px solid #444;
+    border: 1px solid #666; /* Ajoute une bordure claire autour de chaque cellule */
     text-align: center;
     padding: 0;
+    position: relative; /* Pour positionner des éléments internes si nécessaire */
+}
+
+
+table td:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Surligne légèrement la cellule au survol */
 }
 
 table td img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    max-width: 100%; /* Limite la largeur à 100% de la cellule */
+    max-height: 100%; /* Limite la hauteur à 100% de la cellule */
+    object-fit: contain; /* Ajuste l'image pour qu'elle reste dans la cellule sans déformation */
+    display: block; /* Évite les espaces autour de l'image */
+    margin: auto; /* Centre l'image dans la cellule */
 }
 
 /* Section des soldats et villes */
@@ -117,6 +125,40 @@ button:hover {
     background: #e85c55;
     transform: scale(1.05);
 }
+
+/* Conteneur des boutons */
+.controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonnes de largeur égale */
+    gap: 5px; /* Espacement entre les boutons */
+    justify-items: center; /* Centre horizontalement les boutons */
+    align-items: center; /* Centre verticalement les boutons */
+    margin-top: 10px;
+}
+
+/* Boutons */
+.controls button {
+    display: flex; /* Utilise Flexbox pour aligner le texte */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    width: 40px;
+    height: 40px;
+    background: #ff6f61;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-size: 0.8rem; /* Ajuste la taille du texte pour qu'il soit lisible */
+    text-align: center;
+}
+
+.controls button:hover {
+    background: #e85c55;
+    transform: scale(1.1);
+}
+
 
 /* Liens */
 .logout-link {
