@@ -1,0 +1,106 @@
+/* Styles globaux */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a1a, #333);
+    color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    gap: 20px;
+}
+
+/* Titre de la page */
+h1 {
+    font-size: 3rem;
+    margin: 20px 0;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px #ff6f61;
+}
+
+/* Table générale */
+table {
+    width: 80%;
+    border-collapse: collapse; /* Évite les espaces entre les bordures */
+    margin: 20px 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    background: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none; /* Supprime toute bordure */
+}
+
+/* En-tête du tableau */
+table thead {
+    background: #ff6f61;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+table thead th {
+    padding: 15px;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Corps du tableau */
+table tbody tr {
+    transition: all 0.2s ease-in-out;
+}
+
+table tbody tr:nth-child(even) {
+    background: #555;
+}
+
+table tbody tr:nth-child(odd) {
+    background: #666;
+}
+
+table tbody tr:hover {
+    background: #ff6f61;
+    color: #000;
+    cursor: pointer;
+}
+
+/* Cellules */
+table td, table th {
+    padding: 10px;
+    text-align: center;
+    border: none;
+    color: #fff;
+}
+
+/* Liens d'action */
+table tbody a {
+    color: #fff;
+    text-decoration: none;
+    background: #333;
+    padding: 5px 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+table tbody a:hover {
+    background: #ff6f61;
+    color: #000;
+    box-shadow: 0 5px 10px rgba(255, 111, 97, 0.5);
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    table {
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    table td, table th {
+        font-size: 0.9rem;
+    }
+}

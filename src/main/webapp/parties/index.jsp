@@ -2,7 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Ensembles des grilles disponibles</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/parties.css">
 </head>
 <body>
 <h1>Ensembles des grilles disponibles</h1>

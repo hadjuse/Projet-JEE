@@ -11,6 +11,7 @@
 <html>
 <head>
     <title>Connexion</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 </head>
 <body>
 <h1>Connexion</h1>
@@ -19,7 +20,6 @@
     <input type="text" name="nom" id="nom" required>
     <label for="mdp">Mot de passe :</label>
     <input type="password" name="mdp" id="mdp" required>
-    <br>
     <button type="submit">Se connecter</button>
 </form>
 </body>
