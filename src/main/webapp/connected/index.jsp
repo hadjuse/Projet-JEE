@@ -18,18 +18,20 @@
 %>
 <html>
 <head>
-    <title>Connection confirmation</title>
+    <title>Confirmation connexion</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/menuConnexion.css">
 </head>
 <body>
-<h1>Connexion  confirmation</h1>
+<h1>Confirmation de connexion</h1>
 <p>Vous êtes connecté en tant que <%= sessionName %></p>
-<a href="${pageContext.request.contextPath}/createGrille">Creer une partie</a> <br>
-<a href="${pageContext.request.contextPath}/retrieveGrilles">Rejoindre une partie</a> <br>
-<a href="scores">Scores</a> <br>
-<a href="rules">Règles</a> <br>
-<a href="credits">Crédits</a> <br>
-<a href="../form/index.jsp">Inscription</a> <br>
-<!-- add deconexion -->
-<a href="${pageContext.request.contextPath}/logout">Deconnexion</a> <br>
+<div class="menu-container">
+    <a href="${pageContext.request.contextPath}/createGrille">Créer une partie</a>
+    <a href="${pageContext.request.contextPath}/retrieveGrilles">Rejoindre une partie</a>
+    <a href="scores">Scores</a>
+    <a href="rules">Règles</a>
+    <a href="credits">Crédits</a>
+    <a href="../form/index.jsp">Inscription</a>
+    <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>
+</div>
 </body>
 </html>

@@ -1,106 +1,79 @@
-/* grille.css */
+/* Styles globaux */
 
-/* Styles généraux */
 body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a1a, #333);
+    color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    position: relative;
-    background-color: #f4f4f9; /* Fond clair pour une meilleure esthétique */
-    color: #333;
+    text-align: center;
+    gap: 20px;
+    min-height: 100vh;
+
 }
 
+/* Titre */
 h1 {
-    margin-top: 10px; /* Réduit l'espace au-dessus du titre */
-    color: #2c3e50;
+    font-size: 3rem;
+    margin: 20px 0;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px #ff6f61;
 }
 
-/* Conteneur principal */
-.main-container {
+/* Container principal */
+.table-container {
     display: flex;
-    width: 100%;
-    justify-content: center;
-}
-
-/* Conteneur des informations du joueur et des sections */
-.info-container {
-    display: flex;
-    flex-direction: column; /* Aligne les sections verticalement */
-    margin-right: 20px; /* Espace entre les infos et la table */
-}
-
-/* Boîte d'informations du joueur */
-.player-info {
-    margin-bottom: 20px;
+    flex-direction: row; /* Affiche les soldats à côté de la grille */
+    align-items: flex-start; /* Aligne le haut des éléments */
+    gap: 20px;
+    background: #444;
     padding: 20px;
-    border: 1px solid #ddd;
-    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* Informations joueur */
+.player-info {
+    background: #555;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+    text-align: left; /* Centre le texte à gauche */
+    width: 90%; /* Reduit la largeur */
+    max-width: 1200px; /* Aligné avec la grille */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+    margin: 0 auto 20px auto; /* Centre l'élément et ajoute de l'espace en bas */
 }
 
-.player-info h3 {
-    margin-top: 0;
-    color: #34495e;
-}
-
-.player-info p {
-    margin: 5px 0;
-}
 
 /* Section des soldats */
 .soldiers-section {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    border-radius: 5px;
+    background: #555;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    width: 300px; /* Largeur fixe pour la liste des soldats */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+    overflow-y: auto; /* Ajoute une barre de défilement si nécessaire */
+    max-height: 500px; /* Limite la hauteur pour les grandes grilles */
 }
 
 .soldiers-section h3 {
     margin-bottom: 10px;
-    font-size: 1.5em;
-    color: #333;
+    color: #ff6f61;
 }
 
 .soldier-info {
-    margin-bottom: 15px;
+    background: #444;
     padding: 10px;
-    border: 1px solid #ddd;
-    background-color: #fff;
+    margin-bottom: 10px;
     border-radius: 5px;
-}
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
 
-.soldier-info p {
-    margin: 5px 0;
-    font-size: 1em;
-    color: #555;
-}
-
-.soldier-info strong {
-    color: #000;
-}
-
-.soldier-info form {
-    margin-top: 10px;
-}
-
-.soldier-info button {
-    padding: 5px 10px;
-    font-size: 1em;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.soldier-info button:hover {
-    background-color: #0056b3;
-}
 
 /* Section des villes */
 .cities-section {
@@ -161,103 +134,103 @@ h1 {
     width: 100%;
 }
 
+.soldier-info p {
+    margin: 5px 0;
+}
+
+/* Table de la grille */
 table {
     border-collapse: collapse;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden; /* Assure que border-radius s'applique à tous les bords */
+    margin: 20px 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    background: #333;
 }
 
-td {
-    width: 100px;
-    height: 100px;
-    border: 1px solid #ccc;
-    text-align: center;
-    vertical-align: middle; /* Centre le contenu verticalement */
+table td {
+    width: 50px; /* Taille des cellules */
+    height: 50px;
+    border: 1px solid #444;
     position: relative;
-    transition: transform 0.3s ease, background-color 0.3s ease;
+    text-align: center;
+    padding: 0;
 }
 
-td:hover {
-    transform: scale(1.05);
-    background-color: #f0f8ff; /* Effet de survol bleu clair */
+table td img {
+    width: 100%; /* Remplit la cellule */
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-img {
-    width: 80px;
-    height: 80px;
+/* Boutons dans la grille */
+table td .controls, .soldier-info form {
+    margin-top: 5px;
 }
 
-/* Boutons */
-button {
-    padding: 8px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #3498db;
+table td button, .soldier-info button {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    background: #ff6f61;
     border: none;
-    border-radius: 4px;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background 0.3s, transform 0.2s;
 }
 
-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-3px);
+table td button:hover, .soldier-info button:hover {
+    background: #e85c55;
+    transform: scale(1.05);
 }
 
-button:active {
-    transform: translateY(0);
-    background-color: #1e6f96;
-}
-
-/* Conteneur des boutons de déplacement centré dans la case */
-.button-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Deux boutons par ligne */
-    gap: 4px; /* Espace entre les boutons */
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centre la zone au milieu de la cellule */
-}
-
-/* Lien de déconnexion */
+/* Liens */
 .logout-link {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .logout-link a {
-    font-size: 16px;
-    padding: 10px 20px;
-    background-color: #e74c3c;
+    font-size: 1.2rem;
     color: #fff;
     text-decoration: none;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    background: #444;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: background 0.3s, transform 0.2s;
 }
 
 .logout-link a:hover {
-    background-color: #c0392b;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background: #ff6f61;
+    transform: scale(1.1);
 }
 
-/* Media Queries */
-@media (max-width: 768px) {
-    .main-container {
-        flex-direction: column; /* Passe en colonne sur petits écrans */
-        align-items: center;
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .table-container {
+        flex-direction: column; /* Affiche les soldats en dessous de la grille sur petits écrans */
     }
 
-    .info-container {
-        margin-right: 0; /* Supprime l'espace à droite */
-        width: 100%; /* Prend toute la largeur */
+    .soldiers-section {
+        width: 100%;
+        max-height: none; /* Permet d'afficher tous les soldats */
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    table td {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logout-link a {
+        font-size: 1rem;
+        padding: 8px 15px;
     }
 
     .table-container {

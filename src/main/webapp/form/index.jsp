@@ -9,16 +9,17 @@
 <%@ page import="jakarta.servlet.jsp.PageContext"%>
 <html>
 <head>
-    <title>Register player</title>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/register.css">
 </head>
 <body>
-<h1>Register player</h1>
+<h1>Inscription</h1>
 <form action="${pageContext.request.contextPath}/register" method="post">
     <label for="nom">Nom :</label>
     <input type="text" name="nom" id="nom" required>
-    <label for="mdp">Password :</label>
+    <label for="mdp">Mot de passe :</label>
     <input type="password" name="mdp" id="mdp" required>
-    <br>
-    <button type="submit">Register</button>
+    <button type="submit">S'inscrire</button>
 </form>
 </body>

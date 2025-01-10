@@ -2,24 +2,27 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Grille</title>
-    <link rel="stylesheet" type="text/css" href="css/grille.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/grille.css">
 </head>
 <body>
 
 <h1>Grille de jeu</h1>
 
-<div class="main-container">
-    <!-- Conteneur des informations du joueur et des sections -->
-    <div class="info-container">
-        <div class="player-info">
-            <h3>Informations du joueur</h3>
-            <p>Nom : <strong>${joueur.nom}</strong></p>
-            <p>Score : <strong>${joueur.score}</strong></p>
-            <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
-            <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
-            <p>Nombre de villes : <strong>${joueur.nbVilles}</strong></p>
-        </div>
+<!-- Player Information Section -->
+<div class="player-info">
+    <h3>Informations du joueur</h3>
+    <p>Nom : <strong>${joueur.nom}</strong></p>
+    <p>Score : <strong>${joueur.score}</strong></p>
+    <p>Points de production : <strong>${joueur.pointsProduction}</strong></p>
+    <p>Nombre de soldat : <strong>${joueur.nbSoldats}</strong></p>
+    <p>Nombre de villes : <strong>${joueur.nbVilles}</strong></p>
+</div>
+
+<!-- Grid Display -->
+<c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
+    <div class="table-container">
 
         <!-- Soldiers Section -->
         <div class="soldiers-section">
