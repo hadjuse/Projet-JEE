@@ -204,7 +204,7 @@ public class Soldat{
     }
 
     private boolean gererDeplacementSoldatOccupe(Tuile source, Tuile destination, int xDest, int yDest, SoldatDAO soldatDAO) throws Exception {
-        if (destination.getSoldat().subirAttaque(2)) {
+        if (destination.getSoldat().subirAttaque(attaquer())) {
             mettreAJourRelations(source, destination);
             mettreAJourCoordonnees(xDest, yDest);
             mettreAJourSoldat(soldatDAO);

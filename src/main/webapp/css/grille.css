@@ -183,7 +183,27 @@ button:hover {
     background: #ff6f61;
     transform: scale(1.1);
 }
+/* Bouton Passer Tour */
+.passer-tour {
+    margin-top: 20px;
+}
 
+.passer-tour button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    background: #ff6f61;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.passer-tour button:hover {
+    background: #e85c55;
+    transform: scale(1.05);
+}
 /* Responsive */
 @media screen and (max-width: 768px) {
     .table-container {

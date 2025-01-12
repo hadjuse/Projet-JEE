@@ -19,7 +19,15 @@ public class SoldatDAO implements AutoCloseable {
 
     @Transactional
     public void creerSoldat(Soldat soldat) {
-        emf.createEntityManager().persist(soldat);
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            if (soldat.getId() == null || em.find(Soldat.class, soldat.getId()) == null) {
+                em.persist(soldat);
+            } else {
+                em.merge(soldat);
+            }
+            em.getTransaction().commit();
+        }
     }
 
     @Transactional
@@ -61,6 +69,7 @@ public class SoldatDAO implements AutoCloseable {
     public void close() throws Exception {
         emf.close();
     }
+
     @Transactional
     public List<Soldat> trouverSoldatsParJoueurId(Long id) {
         try (EntityManager em = emf.createEntityManager()) {

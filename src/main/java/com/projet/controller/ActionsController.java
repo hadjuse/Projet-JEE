@@ -63,6 +63,7 @@ public class ActionsController {
 
         // Ajouter le premier soldat avec le joueur actuel comme propriétaire
         grille.ajouterSoldat(0, 1, joueur);
+        grille.getJoueurs().add(joueur);
         System.out.println("Soldat ajouté, nombre de soldats: " + joueur.getNbSoldats());
         System.out.println("Score actuel: " + joueur.getScore());
 
@@ -75,6 +76,7 @@ public class ActionsController {
             grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
             // ajout d'un soldat
             grille.ajouterSoldat(2, 4, joueur2);
+            grille.getJoueurs().add(joueur2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,14 +131,12 @@ public class ActionsController {
     }
 
     public void deplacerSoldat(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String grilleId = request.getParameter("grilleId");
         int xSource = Integer.parseInt(request.getParameter("xSource"));
         int ySource = Integer.parseInt(request.getParameter("ySource"));
         String direction = request.getParameter("direction");
 
         try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); SoldatDAO soldatDAO = new SoldatDAO(); VilleDAO villeDAO = new VilleDAO()) {
-
             Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
             Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
 

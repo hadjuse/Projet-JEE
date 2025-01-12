@@ -65,7 +65,14 @@
             </c:forEach>
         </div>
     </div>
-
+    <!-- Bouton Passer Tour -->
+    <div class="passer-tour">
+        <form action="${pageContext.request.contextPath}/FrontController" method="post">
+            <input type="hidden" name="grilleId" value="${grille.id}">
+            <input type="hidden" name="action" value="passerTour">
+            <button type="submit">Passer Tour</button>
+        </form>
+    </div>
     <!-- Grid Display -->
     <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
         <table>
