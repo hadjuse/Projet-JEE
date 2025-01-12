@@ -1,7 +1,9 @@
 package com.projet.controller;
 
 import com.projet.model.Grille;
+import com.projet.model.Joueur;
 import com.projet.persistence.GrilleDAO;
+import com.projet.persistence.JoueurDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,9 +15,6 @@ import java.io.IOException;
 
 @WebServlet("/gameSession")
 public class GameSessionServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession sessionPlayer = request.getSession(false);
@@ -25,7 +24,7 @@ public class GameSessionServlet extends HttpServlet {
             return;
         }
 
-        // Retrieve the grid ID from the request parameter
+        // Retrieve the grid ID
         String grilleIdParam = request.getParameter("grilleId");
         if (grilleIdParam == null) {
             response.sendRedirect("index.jsp");
@@ -34,16 +33,27 @@ public class GameSessionServlet extends HttpServlet {
 
         Long grilleId = Long.parseLong(grilleIdParam);
 
+        // ********** AJOUTEZ CE CODE **********
+        Joueur sessionJoueur = (Joueur) sessionPlayer.getAttribute("joueur");
+        if (sessionJoueur != null) {
+            try (JoueurDAO joueurDAO = new JoueurDAO()) {
+                Joueur reloaded = joueurDAO.trouverJoueurParId(sessionJoueur.getId());
+                sessionPlayer.setAttribute("joueur", reloaded);
+            }catch (Exception e) {
+                throw new ServletException("Erreur lors de la récupération du joueur", e);
+        }
+        // **************************************
+
         try (GrilleDAO grilleService = new GrilleDAO()) {
             Grille grille = grilleService.trouverGrilleParId(grilleId);
 
-            // Set the grid data as a request attribute
             request.setAttribute("grille", grille);
             request.setAttribute("action", "afficherGrille");
-            // Forward the request to the JSP page
             request.getRequestDispatcher("/FrontController").forward(request, response);
         } catch (Exception e) {
             throw new ServletException("Erreur lors de la récupération de la grille", e);
         }
     }
+}
+
 }

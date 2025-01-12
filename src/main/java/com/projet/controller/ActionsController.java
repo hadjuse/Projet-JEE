@@ -63,7 +63,7 @@ public class ActionsController {
 
         // Ajouter le premier soldat avec le joueur actuel comme propriétaire
         grille.ajouterSoldat(0, 1, joueur);
-        grille.getJoueurs().add(joueur);
+        grille.addJoueur(joueur);
         System.out.println("Soldat ajouté, nombre de soldats: " + joueur.getNbSoldats());
         System.out.println("Score actuel: " + joueur.getScore());
 
@@ -76,7 +76,7 @@ public class ActionsController {
             grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
             // ajout d'un soldat
             grille.ajouterSoldat(2, 4, joueur2);
-            grille.getJoueurs().add(joueur2);
+            grille.addJoueur(joueur2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,14 +90,19 @@ public class ActionsController {
         // Envoi des attributs à la vue
         request.setAttribute("joueur", joueur);
         try (GrilleDAO grilleDAO = new GrilleDAO()) {
-            grilleDAO.creerGrille(grille);
+            //grilleDAO.creerGrille(grille);
         } catch (Exception e) {
             e.printStackTrace();
         }
         request.setAttribute("grille", grille);
-
+        grille.getJoueurs().forEach(System.out::println);
         // Mise à jour du joueur
-        joueurDAO.mettreAJourJoueur(joueur);
+        try (JoueurDAO joueurDAO = new JoueurDAO(); GrilleDAO grilleDAO = new GrilleDAO()) {
+            grilleDAO.enregistrerGrille(grille);
+            joueurDAO.mettreAJourJoueur(joueur);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } // Mise à jour du joueur
         //grilleDAO.enregistrerGrille(grille);
         // Log pour vérifier que la grille a été créée
         System.out.println("Grille créée avec succès : " + grille);
@@ -109,26 +114,40 @@ public class ActionsController {
             request.setAttribute("message", "ID de la grille manquant.");
             return;
         }
-        HttpSession session = request.getSession(false);
-        // Récupérer la grille depuis la base de données
-        try (GrilleDAO grilleDAO = new GrilleDAO(); JoueurDAO joueurDAO = new JoueurDAO(); SoldatDAO soldatDAO = new SoldatDAO()) {
-            Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
-            Joueur joueur = (Joueur) request.getSession().getAttribute("joueur");
-            if (grille == null) {
-                request.setAttribute("message", "Grille non trouvée.");
-            } else {
-                // Récupérer les soldats du joueur
-                List<Soldat> soldats = soldatDAO.trouverSoldatsParJoueurId(joueur.getId().longValue());
-                joueur.setSoldats(soldats);
 
+        try (GrilleDAO grilleDAO = new GrilleDAO();
+             JoueurDAO joueurDAO = new JoueurDAO();
+             SoldatDAO soldatDAO = new SoldatDAO())
+        {
+            Grille grille = grilleDAO.trouverGrilleParId(Long.parseLong(grilleId));
+
+            // Récupérer le joueur (depuis la session) :
+            HttpSession session = request.getSession(false);
+            Joueur sessionPlayer = (Joueur) session.getAttribute("joueur");
+
+            if (grille == null || sessionPlayer == null) {
+                request.setAttribute("message", "Grille ou joueur non trouvé.");
+            } else {
+                // 1) Recharger le joueur depuis la base (pour rafraîchir turn et autres champs)
+                Joueur joueurMisAJour = joueurDAO.trouverJoueurParId(sessionPlayer.getId());
+
+                // 2) Mettre ce joueurMisAJour dans la session
+                session.setAttribute("joueur", joueurMisAJour);
+
+                // 3) Facultatif : récupérer les soldats
+                List<Soldat> soldats = soldatDAO.trouverSoldatsParJoueurId(joueurMisAJour.getId().longValue());
+                joueurMisAJour.setSoldats(soldats);
+
+                // 4) Préparer les attributs pour la JSP
                 request.setAttribute("grille", grille);
-                request.setAttribute("joueur", joueur);
+                request.setAttribute("joueur", joueurMisAJour);
                 request.setAttribute("soldats", soldats);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public void deplacerSoldat(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String grilleId = request.getParameter("grilleId");
@@ -388,6 +407,8 @@ public class ActionsController {
                 joueur.updateScore();
                 joueurDAO.mettreAJourJoueur(joueur);
                 grilleDAO.enregistrerGrille(grille);
+                Joueur joueur1 = joueurDAO.trouverJoueurParId(joueur.getId());
+                System.out.println(joueur1.isTurn());
                 request.setAttribute("grille", grille);
                 request.setAttribute("joueur", joueur);
             }
@@ -395,4 +416,86 @@ public class ActionsController {
             e.printStackTrace();
         }
     }
+
+    public void passerTour(HttpServletRequest request, HttpServletResponse response) {
+        try (GrilleDAO grilleDAO1 = new GrilleDAO();
+             JoueurDAO joueurDAO = new JoueurDAO())
+        {
+            // 1) Récupérer la grille via l'ID passé en paramètre
+            Long grilleId = Long.valueOf(request.getParameter("grilleId"));
+            Grille grille = grilleDAO1.trouverGrilleParId(grilleId);
+
+            // (Optionnel) Enregistrer la grille si vous le souhaitez vraiment ici
+            grilleDAO1.enregistrerGrille(grille);
+
+            // 2) Récupérer le joueur actuel depuis la session
+            Joueur currentPlayer = (Joueur) request.getSession(false).getAttribute("joueur");
+            if (currentPlayer == null) {
+                throw new RuntimeException("Joueur en session introuvable.");
+            }
+
+            System.out.println("Joueur actuel : " + currentPlayer.getNom()
+                    + " (ID=" + currentPlayer.getId() + ")");
+
+            // 3) Mettre turn=false pour le joueur actuel en base
+            currentPlayer.setTurn(false);
+            joueurDAO.mettreAJourJoueur(currentPlayer);
+
+            // 4) Récupérer la liste des joueurs dans la grille
+            List<Joueur> joueurs = grille.getJoueurs();
+            // ex. [ Joueur#1, Joueur#2, ... ]
+
+            // 5) Trouver l'index du currentPlayer (par ID) dans cette liste
+            int currentIndex = -1;
+            Integer currentPlayerId = currentPlayer.getId();
+            for (int i = 0; i < joueurs.size(); i++) {
+                if (joueurs.get(i).getId().equals(currentPlayerId)) {
+                    currentIndex = i;
+                    break;
+                }
+            }
+            if (currentIndex == -1) {
+                throw new RuntimeException("Impossible de trouver le joueur ID="
+                        + currentPlayerId + " dans la liste !");
+            }
+
+            // 6) Calculer l’index du prochain joueur
+            int nextIndex = (currentIndex + 1) % joueurs.size();
+
+            // 7) Récupérer le prochain joueur via son ID en base (pour être sûr de l’entité)
+            Joueur nextPlayer = joueurDAO.trouverJoueurParId(joueurs.get(nextIndex).getId());
+            if (nextPlayer == null) {
+                throw new RuntimeException("Impossible de trouver le prochain joueur (index="
+                        + nextIndex + ") en base !");
+            }
+
+            // 8) Mettre turn=true pour le prochain joueur
+            nextPlayer.setTurn(true);
+            joueurDAO.mettreAJourJoueur(nextPlayer);
+
+            // Logs de débogage
+            System.out.println("Index du joueur actuel : " + currentIndex);
+            System.out.println("Index du prochain joueur : " + nextIndex);
+            System.out.println("** Joueur actuel (ID=" + currentPlayerId + ") => turn=false");
+            System.out.println("** Joueur suivant (ID=" + nextPlayer.getId() + ") => turn=true");
+
+            // 9) Préparer les attributs pour la JSP
+            request.getSession(false).setAttribute("joueur", currentPlayer);
+            request.setAttribute("joueur", currentPlayer);
+            request.setAttribute("grille", grille);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Ce second try(...) est vide dans votre code ; vous pouvez soit le supprimer,
+        // soit y mettre un vrai traitement si besoin.
+        try (JoueurDAO joueurDAO1 = new JoueurDAO()) {
+            // Code additionnel si nécessaire
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
