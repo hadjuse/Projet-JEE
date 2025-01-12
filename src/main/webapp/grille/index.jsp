@@ -91,7 +91,7 @@
                             <c:choose>
                                 <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
                                     <img src="icons/Large/soldier.png" alt="Soldier">
-                                    <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id && joueur.isTurn() == true}">
+                                    <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id && joueur.isTurn() && !tuile.getSoldat().isAJouer()}">
                                         <form action="${pageContext.request.contextPath}/FrontController" method="post">
                                             <input type="hidden" name="action" value="deplacerSoldat">
                                             <input type="hidden" name="grilleId" value="${grille.id}">

@@ -419,7 +419,8 @@ public class ActionsController {
 
     public void passerTour(HttpServletRequest request, HttpServletResponse response) {
         try (GrilleDAO grilleDAO1 = new GrilleDAO();
-             JoueurDAO joueurDAO = new JoueurDAO())
+             JoueurDAO joueurDAO = new JoueurDAO();
+             SoldatDAO soldatDAO = new SoldatDAO())
         {
             // 1) Récupérer la grille via l'ID passé en paramètre
             Long grilleId = Long.valueOf(request.getParameter("grilleId"));
@@ -473,25 +474,24 @@ public class ActionsController {
             nextPlayer.setTurn(true);
             joueurDAO.mettreAJourJoueur(nextPlayer);
 
+            // 9) Mettre à jour l'état des soldats du prochain joueur pour qu'ils soient jouables
+            List<Soldat> soldats = soldatDAO.trouverSoldatsParJoueurId(nextPlayer.getId().longValue());
+            for (Soldat soldat : soldats) {
+                soldat.setAJouer(false);
+                soldatDAO.mettreAJourSoldat(soldat);
+            }
+
             // Logs de débogage
             System.out.println("Index du joueur actuel : " + currentIndex);
             System.out.println("Index du prochain joueur : " + nextIndex);
             System.out.println("** Joueur actuel (ID=" + currentPlayerId + ") => turn=false");
             System.out.println("** Joueur suivant (ID=" + nextPlayer.getId() + ") => turn=true");
 
-            // 9) Préparer les attributs pour la JSP
+            // 10) Préparer les attributs pour la JSP
             request.getSession(false).setAttribute("joueur", currentPlayer);
             request.setAttribute("joueur", currentPlayer);
             request.setAttribute("grille", grille);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Ce second try(...) est vide dans votre code ; vous pouvez soit le supprimer,
-        // soit y mettre un vrai traitement si besoin.
-        try (JoueurDAO joueurDAO1 = new JoueurDAO()) {
-            // Code additionnel si nécessaire
         } catch (Exception e) {
             e.printStackTrace();
         }
