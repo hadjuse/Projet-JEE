@@ -19,7 +19,7 @@ public class Grille {
     private List<Soldat> soldats;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
     private List<Ville> villes;
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "grille", fetch = FetchType.EAGER)
     private List<Joueur> joueurs = new ArrayList<>();
     public Grille(){
     }
@@ -166,4 +166,14 @@ public class Grille {
     public void setJoueurs(List<Joueur> joueurs) {
         this.joueurs = joueurs;
     }
+    public void addJoueur(Joueur joueur) {
+        joueurs.add(joueur);
+        joueur.setGrille(this);
+    }
+
+    public void removeJoueur(Joueur joueur) {
+        joueurs.remove(joueur);
+        joueur.setGrille(null);
+    }
+
 }

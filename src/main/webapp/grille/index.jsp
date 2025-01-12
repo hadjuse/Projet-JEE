@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -72,7 +73,13 @@
             <input type="hidden" name="action" value="passerTour">
             <button type="submit">Passer Tour</button>
         </form>
+        <form action="${pageContext.request.contextPath}/gameSession?grilleId=${grille.id}" method="get">
+            <input type="hidden" name="action" value="afficherGrille">
+            <input type="hidden" name="grilleId" value="${grille.id}">
+            <button type="submit">Rafraîchir</button>
+        </form>
     </div>
+    <!-- Bouton Rafraîchir -->
     <!-- Grid Display -->
     <c:if test="${grille.lignes > 0 && grille.colonnes > 0}">
         <table>
@@ -84,7 +91,7 @@
                             <c:choose>
                                 <c:when test="${tuile.getType() == 'SOLDATOCCUPE'}">
                                     <img src="icons/Large/soldier.png" alt="Soldier">
-                                    <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id}">
+                                    <c:if test="${tuile.getSoldat().getProprietaire().id == joueur.id && joueur.isTurn() == true}">
                                         <form action="${pageContext.request.contextPath}/FrontController" method="post">
                                             <input type="hidden" name="action" value="deplacerSoldat">
                                             <input type="hidden" name="grilleId" value="${grille.id}">
@@ -154,10 +161,51 @@
 </c:if>
 
 <!-- Logout Link -->
+
 <div class="logout-link">
     <a href="${pageContext.request.contextPath}/logout">Déconnexion</a>
     <a href="${pageContext.request.contextPath}/connected">Retour au menu</a>
 </div>
+<!--
+<script>
+    // On récupère l'ID du joueur depuis la JSP
+    var playerId = "${joueur.id}";
+    // On compose l'URL du WebSocket Endpoint
+    // Note: si vous êtes en HTTPS, remplacez ws:// par wss://
+    var wsUrl = "ws://" + window.location.host + "${pageContext.request.contextPath}/ws/game/" + playerId;
+    console.log("Connexion WebSocket à : " + wsUrl);
 
+    var socket = new WebSocket(wsUrl);
+
+    // Quand la connexion s'ouvre
+    socket.onopen = function(event) {
+        console.log("WebSocket ouvert pour le joueur " + playerId);
+        // Optionnel : Envoyer un message au serveur (si besoin)
+        // socket.send("Hello from player " + playerId);
+    };
+
+    // Quand on reçoit un message du serveur
+    socket.onmessage = function(event) {
+        console.log("Message reçu : " + event.data);
+        if (event.data === "turn:true") {
+            // Action que vous voulez faire quand le serveur vous annonce "c'est ton tour"
+            alert("C'est votre tour de jouer !");
+            // Option : recharger la page pour voir les boutons actifs
+            // location.reload();
+        }
+        // Vous pouvez traiter d'autres messages (ex: "chat:Hello", etc.)
+    };
+
+    // Quand la connexion est fermée
+    socket.onclose = function(event) {
+        console.log("WebSocket fermé");
+    };
+
+    // Gestion des erreurs
+    socket.onerror = function(event) {
+        console.error("WebSocket error: ", event);
+    };
+</script>
+-->
 </body>
 </html>

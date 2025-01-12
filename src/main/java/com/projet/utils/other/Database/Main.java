@@ -15,7 +15,7 @@ public class Main {
             TableResetUtil.dropTable(em, "Grille");
             TableResetUtil.dropTable(em, "Foret");
             TableResetUtil.dropTable(em, "Ville");
-            //TableResetUtil.resetTable(em, "Joueur");
+            TableResetUtil.dropTable(em, "Joueur");
         } finally {
             em.close();
             emf.close();

@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Joueur {
@@ -40,7 +41,7 @@ public class Joueur {
 
     @Transient
     private int y;
-
+    @Column(name = "turn")
     private boolean turn;
     @ManyToOne
     private Grille grille;
@@ -190,6 +191,21 @@ public class Joueur {
         setScore(getNbVilles() * 10 + getNbSoldats() * 3);
         System.out.println("Nombre de soldats: " + getNbSoldats());
         System.out.println("Nombre de villes: " + getNbVilles());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Joueur joueur = (Joueur) o;
+        // On compare par l'ID s'il n'est pas nul
+        return Objects.equals(this.id, joueur.id);
+    }
+
+    @Override
+    public int hashCode() {
+        // On peut se baser sur l'id
+        return (id == null) ? 0 : id.hashCode();
     }
 
     public void ajouterPointsProduction(int productionParTour) {
