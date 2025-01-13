@@ -25,7 +25,7 @@ public class RegisterController extends HttpServlet {
         joueur.setNbVilles(0);
         joueur.setNbForets(0);
         joueur.setNbTuiles(0);
-        joueur.setPointsProduction(0);
+        joueur.setPointProduction(0);
         joueur.setNom(nom);
         joueur.setTurn(false);
     }
