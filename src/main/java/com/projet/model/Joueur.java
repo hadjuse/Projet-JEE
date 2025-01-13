@@ -15,25 +15,18 @@ public class Joueur {
     @Column(nullable = false, unique = true)
     private String nom;
 
-    @Column(nullable = false)
     private int score;
 
-    @Column(nullable = false)
     private int nbSoldats;
 
-    @Column(nullable = false)
     private int nbVilles;
 
-    @Column(nullable = false)
     private int nbForets;
 
-    @Column(nullable = false)
     private int nbTuiles;
 
-    @Column(nullable = false)
     private int pointProduction;
 
-    @Column(nullable = false)
     private String password;
 
     @Transient
@@ -71,11 +64,11 @@ public class Joueur {
     public List<Soldat> getSoldats() {
         return soldats;
     }
-    public int getPointsProduction() {
+    public int getPointProduction() {
         return pointProduction;
     }
 
-    public void setPointsProduction(int pointProduction) {
+    public void setPointProduction(int pointProduction) {
         this.pointProduction = pointProduction;
     }
 

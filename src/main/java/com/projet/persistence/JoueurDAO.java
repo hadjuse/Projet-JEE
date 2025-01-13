@@ -55,7 +55,6 @@ public class JoueurDAO implements AutoCloseable {
             em.getTransaction().commit();
         }
     }
-
     @Transactional
     public void supprimerJoueur(Long id) {
         try (EntityManager em = emf.createEntityManager()) {

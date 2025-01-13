@@ -20,7 +20,7 @@ public class CreateGrilleServlet extends HttpServlet {
         session.setAttribute("playerNbVilles", joueur.getNbVilles());
         session.setAttribute("playerNbForets", joueur.getNbForets());
         session.setAttribute("playerNbTuiles", joueur.getNbTuiles());
-        session.setAttribute("playerPointsProduction", joueur.getPointsProduction());
+        session.setAttribute("playerPointsProduction", joueur.getPointProduction());
     }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

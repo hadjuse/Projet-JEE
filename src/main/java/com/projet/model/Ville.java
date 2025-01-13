@@ -85,7 +85,7 @@ public class Ville {
     }
 
     public void produireSoldat() {
-        if (this.getProprietaire() != null && this.getProprietaire().getPointsProduction() >= 20) {
+        if (this.getProprietaire() != null && this.getProprietaire().getPointProduction() >= 20) {
             this.getProprietaire().addNbSoldats(1);
             this.getProprietaire().retirerPointsProduction(20);
         }
