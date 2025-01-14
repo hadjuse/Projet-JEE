@@ -72,6 +72,10 @@ public class ActionsController {
         // ajout d'une ville
         try (JoueurDAO joueurDAO = new JoueurDAO()) {
             Joueur joueur2 = joueurDAO.trouverJoueurParNom("hadjuse3");
+            joueur2.setTurn(false);
+            joueur2.setNbVilles(0);
+            joueur2.setNbSoldats(0);
+            joueur2.setPointProduction(10);
             grille.ajouterVille(0, 2, joueur2);  // Ville du joueur 2
             // ajout d'un soldat
             grille.ajouterSoldat(2, 4, joueur2);
