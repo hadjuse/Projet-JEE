@@ -1,5 +1,3 @@
-Here is the translation of the README file into English:
-
 # Configuration of the MySQL Database with Docker
 
 This document provides instructions for setting up a MySQL database using Docker and integrating connection information into a Jakarta EE application.
