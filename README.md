@@ -1,20 +1,22 @@
-# Configuration de la Base de Données MySQL avec Docker
+Here is the translation of the README file into English:
 
-Ce document fournit des instructions pour configurer une base de données MySQL à l'aide de Docker et pour intégrer les informations de connexion dans une application Jakarta EE.
+# Configuration of the MySQL Database with Docker
 
-## Prérequis
+This document provides instructions for setting up a MySQL database using Docker and integrating connection information into a Jakarta EE application.
 
-1. **Docker** : Assurez-vous que Docker est installé sur votre machine.
-2. **Docker Compose** : Assurez-vous que Docker Compose est installé.
-3. **Git** : Pour le clonage et la gestion des fichiers partagés.
+## Prerequisites
+
+1. **Docker**: Ensure Docker is installed on your machine.
+2. **Docker Compose**: Ensure Docker Compose is installed.
+3. **Git**: For cloning and managing shared files.
 
 ---
 
-## Étapes de Configuration
+## Configuration Steps
 
-### 1. Création du fichier `docker-compose.yml`
+### 1. Creating the `docker-compose.yml` file
 
-Un fichier `docker-compose.yml` est présent dans le projet avec la configuration suivante :
+A `docker-compose.yml` file is present in the project with the following configuration:
 
 ```yaml
 version: '3.8'
@@ -29,41 +31,41 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "${PORT_MAPPING}:3306" # Expose le port configuré pour MySQL
+      - "${PORT_MAPPING}:3306" # Expose the configured port for MySQL
     volumes:
       - mysql_data:/var/lib/mysql
 volumes:
   mysql_data:
 ```
 
-Assurez-vous que le fichier utilise des variables d'environnement pour les identifiants et le port.
+Ensure the file uses environment variables for the credentials and port.
 
-### 2. Création du fichier `.env`
+### 2. Creating the `.env` file
 
-Créez un fichier `.env` à la racine de votre projet pour y définir les variables d'environnement :
+Create a `.env` file at the root of your project to define the environment variables:
 
 ```env
 MYSQL_URL="jdbc:mysql://localhost:3307/shared_db"
-MYSQL_ROOT_PASSWORD=VotreROOTPASSW
+MYSQL_ROOT_PASSWORD=YourROOTPASSW
 MYSQL_DATABASE=shared_db
-MYSQL_USER=un user à definir
-MYSQL_PASSWORD=un password à definir
+MYSQL_USER=define a user
+MYSQL_PASSWORD=define a password
 PORT_MAPPING=3307
 ```
 
-Ces valeurs seront automatiquement injectées dans votre fichier `docker-compose.yml`.
+These values will be automatically injected into your `docker-compose.yml` file.
 
-### 3. Démarrage du conteneur Docker
+### 3. Starting the Docker Container
 
-Lancez la commande suivante pour démarrer le service MySQL :
+Run the following command to start the MySQL service:
 
 ```bash
 docker-compose up -d
 ```
 
-Cette commande créera et lancera le conteneur MySQL en arrière-plan.
+This command will create and start the MySQL container in the background.
 
-Vérifiez que le conteneur fonctionne correctement avec :
+Verify that the container is running correctly with:
 
 ```bash
 docker ps
@@ -71,18 +73,18 @@ docker ps
 
 ---
 
-### 4. Intégration avec Jakarta EE
+### 4. Integration with Jakarta EE
 
-#### a. Modèle du fichier `persistence.temp.xml`
+#### a. Template of the `persistence.temp.xml` file
 
-Utilisez un fichier temporaire pour gérer dynamiquement les informations d'environnement :
+Use a temporary file to dynamically manage environment information:
 
 ```xml
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
              version="3.0">
 
     <persistence-unit name="jeUP">
-        <class>com.projet.model.Joueur</class>
+        <class>com.projet.model.Player</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="$DB_URL" />
             <property name="jakarta.persistence.jdbc.user" value="$DB_USR" />
@@ -98,47 +100,46 @@ Utilisez un fichier temporaire pour gérer dynamiquement les informations d'envi
 </persistence>
 ```
 
-#### b. Script de mise à jour du fichier `persistence.xml`
+#### b. Script to update the `persistence.xml` file
 
-Executez le script Bash en écrivant sur le terminal `./updateBDDInfoConnector.sh` pour injecter les variables d'environnement dans le fichier temporaire pour générer le fichier `persistence.xml` final :
+Run the Bash script by typing `./updateBDDInfoConnector.sh` in the terminal to inject the environment variables into the temporary file to generate the `persistence.xml` file.
 
 ```bash
 updateBDDInfoConnector.sh
 #!/bin/bash
 
-# Chemins des fichiers
+# File paths
 env_file=".env"
 xml_template="src/main/resources/META-INF/persistence.temp.xml"
 xml_output="src/main/resources/META-INF/persistence.xml"
 
-# Charger les variables d'environnement
+# Load environment variables
 export DB_URL=$MYSQL_URL
 export DB_USR=$MYSQL_USER
 export DB_PASS=$MYSQL_PASSWORD
 
-# Substitution des variables et génération du fichier persistence.xml
+# Substitute variables and generate the persistence.xml file
 envsubst < $xml_template > $xml_output
 
-echo "Fichier persistence.xml mis à jour avec succès."
+echo "persistence.xml file successfully updated."
 ```
 
-### 5. Testez la Connexion
+### 5. Test the Connection
 
-1. Assurez-vous que le conteneur MySQL est en cours d'exécution.
-2. Lancez votre application Jakarta EE et vérifiez que la connexion à la base de données fonctionne correctement.
+1. Ensure the MySQL container is running.
+2. Launch your Jakarta EE application and verify that the database connection works correctly.
 
 ---
 
-### Conseils Supplémentaires
+### Additional Tips
 
-- **Ajoutez `.env` à `.gitignore`** : Pour ne pas partager vos identifiants sensibles sur un dépôt public.
-- **Vérifiez les logs MySQL** : En cas d'erreur, consultez les logs du conteneur avec :
+- **Add `.env` to `.gitignore**: To avoid sharing your sensitive credentials in a public repository.
+- **Check MySQL logs**: In case of errors, check the container logs with:
   ```bash
   docker logs mysql_shared
   ```
-- **Mise à jour dynamique** : Réexécutez le script Bash en cas de changement des variables d'environnement.
+- **Dynamic Update**: Rerun the Bash script if environment variables change.
 
 ---
 
-Avec ces étapes, votre configuration Docker pour MySQL est prête et votre application Jakarta EE est correctement intégrée.
-
+With these steps, your Docker configuration for MySQL is ready, and your Jakarta EE application is properly integrated.
